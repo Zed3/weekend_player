@@ -17,7 +17,47 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 
 $(document).ready(function() {
-//    $('#history-table').dataTable();
+    //Create dynamic youtube search
+    $("#url_youtube").keyup(function(){
+        var search_input = $(this).val();
+        var keyword = encodeURIComponent(search_input);
+        // Youtube API
+        var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=5&v=2&alt=jsonc';
+        if (keyword.length < 5){ return; }
+
+        $.ajax({
+            type: "GET",
+            url: yt_url,
+            dataType:"jsonp",
+            success: function(response){
+                if(response.data.items){
+                    var results = "";
+                    $.each(response.data.items, function(i,data){
+                        console.log(data);
+                        var video_id=data.id;
+                        var video_title=data.title;
+                        var video_viewCount=data.viewCount;
+                        var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
+                        results += "<li><a class='btn btn-default' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + data.duration + "</a></li>";
+                    });
+
+                    var re = new RegExp(keyword, 'gi');
+                    results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
+
+                    results = "<ul class='list-unstyled'>" + results + "</ul>";
+                    $("#search_results").html(results);
+                }
+                else
+                {
+                    $("#search_results").html("Nothing was found :(");
+                }
+            }
+        });
+    });
+
+////////////////////
+
+
 } );
 var Room = {
     members: []
