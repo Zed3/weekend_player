@@ -21,8 +21,9 @@ $(document).ready(function() {
     $("#url_youtube").keyup(function(){
         var search_input = $(this).val();
         var keyword = encodeURIComponent(search_input);
+        var max_results = 5;
         // Youtube API
-        var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=5&v=2&alt=jsonc';
+        var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
         if (keyword.length < 5){ return; }
 
         $.ajax({
@@ -33,12 +34,11 @@ $(document).ready(function() {
                 if(response.data.items){
                     var results = "";
                     $.each(response.data.items, function(i,data){
-                        console.log(data);
-                        var video_id=data.id;
-                        var video_title=data.title;
-                        var video_viewCount=data.viewCount;
+                        var video_id = data.id;
+                        var video_title = data.title;
+                        var video_viewCount = data.viewCount;
                         var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        results += "<li><a class='btn btn-default' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + data.duration + "</a></li>";
+                        results += "<li><a class='btn btn-default' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a></li>";
                     });
 
                     var re = new RegExp(keyword, 'gi');
@@ -46,9 +46,7 @@ $(document).ready(function() {
 
                     results = "<ul class='list-unstyled'>" + results + "</ul>";
                     $("#search_results").html(results);
-                }
-                else
-                {
+                } else {
                     $("#search_results").html("Nothing was found :(");
                 }
             }
@@ -237,7 +235,6 @@ function parsePollingData(data) {
     }
     update_lists_info(playlist, history, members);
     redraw_admin_volume(data["admin_volume"]);
-    console.log(data);
     update_stats(data["stats"]);
     redraw_admin_radio(data["admin_radio"]);
 }
@@ -583,6 +580,8 @@ function add_youtube_video(address) {
         },
         complete: function(data) {
             $("#div_loading_area").addClass("add_new_form_loading_hide");
+            $("#url_youtube").val('');
+            $("#search_results").html('');
         },
         dataType: "json",
         timeout: 60000

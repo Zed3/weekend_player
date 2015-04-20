@@ -122,7 +122,7 @@
             <div>Add new (youtube video url):</div>
             <input id="url_youtube" type="url" class="form-control" placeholder="https://www.youtube.com/watch?v=..." style="width: 500px;display:inline;" required autofocus>
             <button class="btn btn-lg btn-primary" type="button" onclick="add_youtube_video($('input[id=url_youtube]')[0].value);$('input[id=url_youtube]')[0].value=''">Add</button>
-            <div id="search_results">Blank</div>
+            <div id="search_results"></div>
           </div><!-- panel body -->
       </div><!-- panel -->
 
