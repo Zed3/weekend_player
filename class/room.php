@@ -125,6 +125,7 @@ class Room {
     $query = "SELECT weekendv2_users.id, name, email, COUNT(*) AS total_uploaded
               FROM weekendv2_playlist
               JOIN weekendv2_users ON added_by_email = email
+              WHERE copy=0
               GROUP BY email
               ORDER BY total_uploaded DESC
               LIMIT 3";
