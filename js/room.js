@@ -38,13 +38,13 @@ $(document).ready(function() {
                         var video_title = data.title;
                         var video_viewCount = data.viewCount;
                         var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        results += "<li><a class='btn btn-default' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a></li>";
+                        results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
                     });
 
                     var re = new RegExp(keyword, 'gi');
                     results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
 
-                    results = "<ul class='list-unstyled'>" + results + "</ul>";
+                    results = "<div class='list-group'>" + results + "</div>";
                     $("#search_results").html(results);
                 } else {
                     $("#search_results").html("Nothing was found :(");

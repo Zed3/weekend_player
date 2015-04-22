@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "startup.php";
 $error_message = "";
 if ($Users->is_auth()) {
@@ -54,7 +54,7 @@ $_SESSION["vitamin"] = $vitamin;
   </head>
   <body>
     <div class="container">
-      <?if ($error_message != "") { ?><div><h3>Error: <?=$error_message?><h3></div><? } ?>
+      <?php if ($error_message != "") { ?><div><h3>Error: <?=$error_message?><h3></div><?php } ?>
       <form class="form-signin" role="form" method="POST" name="weekend_youtube_player">
         <h2 class="form-signin-heading">Weekend Player</h2>
         <input type="hidden" name="todo" value="">
