@@ -1,4 +1,4 @@
-<?
+<?php
 // mysql db details
 $conf_db_host = "localhost";
 $conf_db_user = "weekend_player";

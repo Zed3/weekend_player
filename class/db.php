@@ -1,4 +1,4 @@
-<?
+<?php
 class mydb {
   private $con;
   function __construct($conf_db_host, $conf_db_user, $conf_db_pass, $conf_db_name) {

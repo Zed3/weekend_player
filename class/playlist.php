@@ -1,4 +1,4 @@
-<?
+<?php
 class Playlist {
   function __construct($db) {
     $this->db = $db;

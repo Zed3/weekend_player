@@ -1,4 +1,4 @@
-<?
+<?php
 class Room {
   private $id;
   private $owner_email;
