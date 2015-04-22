@@ -17,6 +17,7 @@
   require("header.php");
 ?>
 <script src="/js/room.js"></script>
+<script src="/js/messages.js"></script>
 <script src="/js/chat.js"></script>
 <script>
   /* don't worry it wont help you hack the room, just to save IO */
@@ -24,8 +25,9 @@
   room_id = "<?=$room_id?>";
 </script>
 
-
 <div class="container-fluid">
+  <div class="alert alert-success" role="alert">...</div>
+
   <!-- navigation -->
   <ol class="breadcrumb">
     <li><span class='glyphicon glyphicon-music'></span></li>
