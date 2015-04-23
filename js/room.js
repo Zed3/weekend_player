@@ -390,14 +390,14 @@ function create_table_data(table, list) {
         var user_name = one["user_name"];
         var length = one["length"];
         var copy = one["copy"];
-        var youtube_url = "https://www.youtube.com/watch?v=" + v;
+        if (copy === '1') { title += ' <span class="label label-default">Bot</span>' };
 
-
+    var youtube_url = "https://www.youtube.com/watch?v=" + v;
     var buttons = "";
-
+    var requeue = " <a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"" + youtube_url + "\")'></span></a>" ;
 
     table_row += "<tr" + tr_class + ">" +
-        "<td>" + title + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
+        "<td>" + title + requeue + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
         "<td>" +
           "<a href='#'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true' onclick='vote_video(" + song_id + ", 1)'></span></a>" +
           " <span class='badge'>" + votes + "</span> " +
