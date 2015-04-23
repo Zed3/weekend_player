@@ -18,7 +18,21 @@ class Room {
       $this->name = $row["name"];
       $this->currently_playing_id = $row["currently_playing_id"];
       $this->update_version = $row["update_version"];
+      $this->options = json_decode($row["room_options"], true);
     }
+  }
+
+  public function update_option($key, $val) {
+    $options = $this->options;
+    $options[$key] = $val;
+    $this->options = $options;
+    $this->update_options();
+  }
+
+  private function update_options() {
+    $options = json_encode($this->options);
+    $query = "UPDATE weekendv2_rooms SET room_options='$options' WHERE id={$this->id} LIMIT 1";
+    $this->db->query($query);
   }
 
   public function get_id() {

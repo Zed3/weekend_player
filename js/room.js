@@ -58,7 +58,22 @@ $(document).ready(function() {
 
 } );
 var Room = {
-    members: []
+    members: [],
+    set_option: function (key, value) {
+        $.ajax({
+            url: "server.php?" + generate_ajax_key(),
+            type: "POST",
+            data: {
+                "id": room_id,
+                "task": "client",
+                "kind": "update_option",
+                "key": key,
+                "value": value
+            },
+            dataType: "json",
+            timeout: 60000
+        });
+    }
 };
 
 function onYouTubeIframeAPIReady() {

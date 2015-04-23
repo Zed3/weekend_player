@@ -26,9 +26,9 @@ if ($task == "report") {
   }
   switch ($kind) {
     case 'get_random_song':
-    $song = $room->get_random_song2();
-    send_data((object)["test" => $song]);
-    break;
+      $song = $room->get_random_song2();
+      send_data((object)["test" => $song]);
+      break;
 
     case 'player_error':
       $Playlist->set_item_report($room->get_currently_playing_id(), $Rooms->clean_variable($_POST["reason"]));
@@ -59,6 +59,15 @@ if ($task == "chat") {
 
 if ($task == "client") {
   $result = false;
+  if ($kind == "update_option") {
+    $room = $Rooms->get_room($room_id);
+    $key = $Rooms->clean_variable($_POST["key"]);
+    $value = $Rooms->clean_variable($_POST["value"]);
+    $room->update_option($key, $value);
+    $result = true;
+    $room->generate_update_version();
+  }
+
   if ($kind == "vote") {
     $room = $Rooms->get_room($room_id);
     $video_id = $Rooms->clean_variable($_POST["video_id"]);
