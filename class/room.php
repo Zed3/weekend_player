@@ -251,6 +251,36 @@ class Room {
     return true;
   }
 
+  public function get_random_song2() {
+    //first, get current playing song info
+    //normal random song, just select random one, not from last 5 songs
+    $room_id = $this->get_id();
+    //first, get current playing song info
+    $query = "
+      SELECT song_id
+      FROM weekendv2_list 
+      WHERE weekendv2_list.room_id='$room_id'
+      AND weekendv2_list.id='{$this->get_currently_playing_id()}'    
+    ";
+    $result = $this->db->query($query);
+    $row = $this->db->fetch($result);
+    $currently_playing_song = $row['song_id'];
+
+    $query = "
+      SELECT song_id
+      FROM weekendv2_list 
+      WHERE weekendv2_list.room_id=$room_id
+      AND song_id<$currently_playing_song
+      AND skip_reason = 'played'
+      GROUP BY song_id
+      ORDER BY RAND()
+      LIMIT 1
+    ";
+    $result = $this->db->query($query);
+    $row = $this->db->fetch($result);
+    return $row['song_id'];
+  }
+
   public function get_random_song() {
     // get random song and it must be different then the last played one.
     $sql = "select count(id) as cc from weekendv2_playlist where room_id='{$this->get_id()}' AND copy='0' AND skip_reason='played' AND id < {$this->get_currently_playing_id()}";

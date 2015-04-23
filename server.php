@@ -25,6 +25,11 @@ if ($task == "report") {
     die("access denied");
   }
   switch ($kind) {
+    case 'get_random_song':
+    $song = $room->get_random_song2();
+    send_data((object)["test" => $song]);
+    break;
+
     case 'player_error':
       $Playlist->set_item_report($room->get_currently_playing_id(), $Rooms->clean_variable($_POST["reason"]));
       $room->set_next_song($Playlist);
