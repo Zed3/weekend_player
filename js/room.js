@@ -383,7 +383,7 @@ function create_table_data(table, list) {
             title = "<span class='glyphicon glyphicon-play'></span> " + title;
         }
 
-        var song_id = one["id"];
+        var song_id = one["song_id"];
         var datetime = one["datetime"];
         var votes = one["votes"];
         var skip_reason = one["skip_reason"];

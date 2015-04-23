@@ -83,7 +83,7 @@ class Room {
 
   public function get_playlist() {
     $query = "
-      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id
       FROM weekendv2_list 
       JOIN weekendv2_users
       ON weekendv2_list.user_id = weekendv2_users.id
@@ -112,7 +112,7 @@ class Room {
 
   public function get_history() {
     $query = "
-      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id
       FROM weekendv2_list 
       JOIN weekendv2_users
       ON weekendv2_list.user_id = weekendv2_users.id
