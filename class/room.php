@@ -122,7 +122,7 @@ class Room {
 
   public function get_stats() {
     $room_id = $this->get_id();
-    $query = "SELECT weekendv2_users.id, name, email, COUNT(*) AS total_uploaded
+    $query = "SELECT weekendv2_users.id, name, COUNT(*) AS total_uploaded
               FROM weekendv2_playlist
               JOIN weekendv2_users ON added_by_email = email
               WHERE copy=0

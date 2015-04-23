@@ -31,6 +31,28 @@ class Playlist {
 
   public function add_item($room_id, $v, $title, $length, $added_by_email) {
     $safe_title = $this->db->safe($title);
+
+    $user_email = $this->db->safe($added_by_email);
+    $user_id = $this->db->get_user_id_by_email($user_email);
+
+    //Search if the song exists in DB
+    $query = "SELECT id FROM weekendv2_songs WHERE video_id='$v' LIMIT 1";
+    $result = $this->db->query($query);
+    if ($result){
+      $row = $this->db->fetch($result);
+      $id = $row['id'];
+    } else {
+      //Insert new song
+      $query = "INSERT INTO weekendv2_songs SET video_id='$v', title='$safe_title', length=$length";      
+      $this->db->query($query);
+      $id = $this->db->insert_id;
+    }
+  
+    //Add to room list
+    $query = "INSERT INTO weekendv2_list SET room_id='$room_id', song_id='$id', user_id=$user_id";
+    $this->db->query($query);
+
+    //legacy code
     $this->db->query("insert into weekendv2_playlist (room_id, v, title, length, added_by_email) values ('{$room_id}', '{$v}', '{$safe_title}', '{$length}', '{$added_by_email}')");
   }
 
@@ -49,8 +71,8 @@ class Playlist {
     if  (strlen($safe_v) != 11) {
       return false;
     }
-    //$response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
-    $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
+    $response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
+    //$response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
     if ($response) {
       //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
       preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
