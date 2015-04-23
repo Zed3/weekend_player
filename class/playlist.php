@@ -11,7 +11,12 @@ class Playlist {
 
   public function add_copy($id) {
     $id = $this->db->safe($id);
-    $this->db->query("INSERT INTO weekendv2_playlist (room_id, v, title, length, added_by_email, copy) SELECT room_id, v, title, length, added_by_email, '1' as copy FROM weekendv2_playlist WHERE id='{$id}' limit 1");
+//    $this->db->query("INSERT INTO weekendv2_playlist (room_id, v, title, length, added_by_email, copy) SELECT room_id, v, title, length, added_by_email, '1' as copy FROM weekendv2_playlist WHERE id='{$id}' limit 1");
+    $query = "
+      INSERT INTO weekendv2_list (room_id, song_id, user_id, copy)
+      SELECT room_id, song_id, user_id, '1' AS copy FROM weekendv2_list WHERE id=$id limit 1
+    ";
+    $this->db->query($query);
     return $this->db->last_id();
   }
 
