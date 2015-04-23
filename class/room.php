@@ -88,6 +88,20 @@ class Room {
       AND weekendv2_playlist.id>='{$this->get_currently_playing_id()}'
       AND skip_reason IS NULL
       ORDER BY weekendv2_playlist.id DESC");
+
+    $query = "
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
+      FROM weekendv2_list 
+      JOIN weekendv2_users
+      ON weekendv2_list.user_id = weekendv2_users.id
+      JOIN weekendv2_songs 
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE skip_reason IS NULL
+      AND weekendv2_list.room_id='{$this->get_id()}'
+      AND weekendv2_list.id>='{$this->get_currently_playing_id()}'
+      ORDER BY weekendv2_list.id DESC
+    ";    
+    $result = $this->db->query($query);
     if (!$result) {
       return array();
     }
@@ -105,6 +119,18 @@ class Room {
 
   public function get_history() {
     $result = $this->db->query("select weekendv2_playlist.*,weekendv2_users.name as user_name from weekendv2_playlist left join weekendv2_users on (weekendv2_users.email=weekendv2_playlist.added_by_email) where weekendv2_playlist.room_id='{$this->get_id()}' AND weekendv2_playlist.id<'{$this->get_currently_playing_id()}' order by weekendv2_playlist.id desc limit 20");
+    $query = "
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
+      FROM weekendv2_list 
+      JOIN weekendv2_users
+      ON weekendv2_list.user_id = weekendv2_users.id
+      JOIN weekendv2_songs 
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE weekendv2_list.room_id='{$this->get_id()}'
+      AND weekendv2_list.id<'{$this->get_currently_playing_id()}'
+      ORDER BY weekendv2_list.id DESC LIMIT 20
+    ";    
+    $result = $this->db->query($query);
     if (!$result) {
       return array();
     }

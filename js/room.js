@@ -384,7 +384,6 @@ function create_table_data(table, list) {
         }
 
         var song_id = one["id"];
-        var added_by_email = one["added_by_email"];
         var datetime = one["datetime"];
         var votes = one["votes"];
         var skip_reason = one["skip_reason"];
