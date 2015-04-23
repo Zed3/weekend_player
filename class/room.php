@@ -231,7 +231,7 @@ class Room {
     if ($this->get_currently_playing_id() == '0') {
 	return true;
     }
-    $sql = "SELECT `currently_playing_id` FROM  `weekendv2_rooms` INNER JOIN weekendv2_playlist ON weekendv2_playlist.id = weekendv2_rooms.currently_playing_id WHERE `weekendv2_rooms`.id='{$this->get_id()}' AND weekendv2_playlist.skip_reason IS NOT NULL";
+    $sql = "SELECT `currently_playing_id` FROM  `weekendv2_rooms` INNER JOIN weekendv2_list ON weekendv2_list.id = weekendv2_rooms.currently_playing_id WHERE `weekendv2_rooms`.id='{$this->get_id()}' AND weekendv2_list.skip_reason IS NOT NULL";
     $result = $this->db->query($sql);
     if (!$result) {
       return false;
@@ -245,32 +245,17 @@ class Room {
   public function get_random_song() {
     //first, get current playing song info
     $room_id = $this->get_id();
-    //first, get current playing song info    
-    $query = "
-      SELECT id
-      FROM weekendv2_list 
-      WHERE weekendv2_list.room_id='$room_id'
-      AND weekendv2_list.id='{$this->get_currently_playing_id()}'    
-    ";
-    $result = $this->db->query($query);
-    if (!$result) {
-      return false;
-    }
-    if (!$row = $this->db->fetch($result)) {
-      return false;
-    }
-    $currently_playing_song = $row['id'];
-
     $query = "
       SELECT id
       FROM weekendv2_list 
       WHERE weekendv2_list.room_id=$room_id
-      AND id<$currently_playing_song
+      AND id<{$this->get_currently_playing_id()}
       AND skip_reason = 'played'
       GROUP BY song_id
       ORDER BY RAND()
       LIMIT 1
     ";
+    $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
