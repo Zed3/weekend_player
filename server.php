@@ -150,6 +150,7 @@ function new_playlist_data($room_id, $update_version) {
 function fetch_data($room) {
   global $db;
   $data = array(
+    "room_options" => $room->get_options(),
     "update_version" => $room->get_update_version(),
     "currently_playing_id" => $room->get_currently_playing_id(),
     "playlist" => $room->get_playlist(),
@@ -203,6 +204,7 @@ while (!is_timeout($start_time, $config_server_poll_max_executing_time)) {
     send_data((object)[
       "timeout" => false,
       "room_id" => $room_id,
+      "room_options" => $data["room_options"],
       "update_version" => $data["update_version"],
       "currently_playing_id" => $data["currently_playing_id"],
       "playlist" => $data["playlist"],

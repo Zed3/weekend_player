@@ -43,6 +43,10 @@ class Room {
     return $this->owner_email;
   }
 
+  public function get_options() {
+    return $this->options;
+  }
+
   public function get_owner_name() {
     $result = $this->db->query("select name from weekendv2_users where email='{$this->owner_email}'");
     if (!$result) {

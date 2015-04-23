@@ -60,6 +60,8 @@ $(document).ready(function() {
 var Room = {
     members: [],
     set_option: function (key, value) {
+        $("#shared_radio .panel-heading").append('<span id="load">__</span>');
+        $('#load').fadeIn('normal');
         $.ajax({
             url: "server.php?" + generate_ajax_key(),
             type: "POST",
@@ -251,7 +253,17 @@ function parsePollingData(data) {
     update_lists_info(playlist, history, members);
     redraw_admin_volume(data["admin_volume"]);
     update_stats(data["stats"]);
+    update_options(data["room_options"]);
     redraw_admin_radio(data["admin_radio"]);
+}
+
+function update_options(options){ 
+    for (var setting in options) {
+        var element_id = setting + '_' + options[setting];
+        //TODO: currently supports radios only
+        $("#" + element_id)[0].checked = "checked";
+    }
+    $('#load').fadeOut('normal');
 }
 
 function update_stats(data) {
