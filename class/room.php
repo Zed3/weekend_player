@@ -218,6 +218,15 @@ class Room {
 
   public function get_playlist_next_song() {
     $result = $this->db->query("select id from weekendv2_playlist where room_id='{$this->get_id()}' AND id > {$this->get_currently_playing_id()} LIMIT 1");
+    $query = "
+      SELECT weekendv2_list.id AS id
+      FROM weekendv2_list 
+      JOIN weekendv2_songs 
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE weekendv2_list.room_id='{$this->get_id()}' 
+      AND weekendv2_list.id > {$this->get_currently_playing_id()} LIMIT 1
+    ";
+    $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
