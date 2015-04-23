@@ -401,6 +401,7 @@ function create_table_data(table, list) {
         var song_id = one["song_id"];
         var datetime = one["datetime"];
         var votes = one["votes"];
+        var total_played = one["total_played"];
         var skip_reason = one["skip_reason"];
         var user_name = one["user_name"];
         var length = one["length"];
@@ -412,7 +413,7 @@ function create_table_data(table, list) {
     var requeue = " <a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"" + youtube_url + "\")'></span></a>" ;
 
     table_row += "<tr" + tr_class + ">" +
-        "<td>" + title + requeue + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
+        "<td>" + title + requeue + "</td><td>" + total_played + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
         "<td>" +
           "<a href='#'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true' onclick='vote_video(" + song_id + ", 1)'></span></a>" +
           " <span class='badge'>" + votes + "</span> " +

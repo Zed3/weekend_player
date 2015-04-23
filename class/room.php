@@ -114,10 +114,15 @@ class Room {
     }
     $list = array();
     while ($row = $this->db->fetch($result)) {
-      //get votes for each item
       $song_id = $row["song_id"];
+      //get votes for each item
       $vote = $this->db->fetch($this->db->query("SELECT IFNULL(SUM(value), 0) AS total FROM weekendv2_votes WHERE song_id = $song_id"));
       $row['votes'] = $vote['total'];
+
+      //get plays for each item
+      $vote = $this->db->fetch($this->db->query("SELECT COUNT(*) AS total_played FROM weekendv2_list WHERE song_id = $song_id"));
+      $row['total_played'] = $vote['total_played'];
+
       $list[] = $row;
     }
 
@@ -142,12 +147,18 @@ class Room {
     }
     $list = array();
     while ($row = $this->db->fetch($result)) {
-      //get votes for each item
       $song_id = $row["song_id"];
+      //get votes for each item
       $vote = $this->db->fetch($this->db->query("SELECT IFNULL(SUM(value), 0) AS total FROM weekendv2_votes WHERE song_id = $song_id"));
       $row['votes'] = $vote['total'];
+
+      //get plays for each item
+      $vote = $this->db->fetch($this->db->query("SELECT COUNT(*) AS total_played FROM weekendv2_list WHERE song_id = $song_id"));
+      $row['total_played'] = $vote['total_played'];
+
       $list[] = $row;
     }
+
 //    $list = array_reverse($list);
     return $list;
   }
@@ -261,6 +272,8 @@ class Room {
     $room_id = $this->get_id();
     $conds = [];
     $random_online_members = $this->options['random_online_members'];
+    $random_positive_vote = $this->options['random_positive_vote'];
+
     if ($random_online_members) {
       global $config_server_poll_max_executing_time;
       $members = $this->get_members($config_server_poll_max_executing_time);
@@ -273,11 +286,18 @@ class Room {
       $conds[] = "user_id IN ($member_ids)";
     }
 
-    if ($conds) { $conds = "AND " . implode("AND", $conds); } else $conds="";
+    $random_positive_vote = $this->options['random_positive_vote'];
+    if ($random_online_members) {
+      $conds[] = "vote > 0"; 
+    }
+
+    if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
 
     $query = "
       SELECT id
       FROM weekendv2_list 
+      JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
+
       WHERE weekendv2_list.room_id=$room_id
       AND id<{$this->get_currently_playing_id()}
       AND skip_reason = 'played'
