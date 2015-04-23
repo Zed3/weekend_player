@@ -82,13 +82,6 @@ class Room {
   }
 
   public function get_playlist() {
-    $result = $this->db->query("select weekendv2_playlist.*,weekendv2_users.name as user_name from weekendv2_playlist
-      left join weekendv2_users on (weekendv2_users.email=weekendv2_playlist.added_by_email)
-      WHERE weekendv2_playlist.room_id='{$this->get_id()}'
-      AND weekendv2_playlist.id>='{$this->get_currently_playing_id()}'
-      AND skip_reason IS NULL
-      ORDER BY weekendv2_playlist.id DESC");
-
     $query = "
       SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
       FROM weekendv2_list 
@@ -118,7 +111,6 @@ class Room {
   }
 
   public function get_history() {
-    $result = $this->db->query("select weekendv2_playlist.*,weekendv2_users.name as user_name from weekendv2_playlist left join weekendv2_users on (weekendv2_users.email=weekendv2_playlist.added_by_email) where weekendv2_playlist.room_id='{$this->get_id()}' AND weekendv2_playlist.id<'{$this->get_currently_playing_id()}' order by weekendv2_playlist.id desc limit 20");
     $query = "
       SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name
       FROM weekendv2_list 
@@ -149,8 +141,8 @@ class Room {
   public function get_stats() {
     $room_id = $this->get_id();
     $query = "SELECT weekendv2_users.id, name, COUNT(*) AS total_uploaded
-              FROM weekendv2_playlist
-              JOIN weekendv2_users ON added_by_email = email
+              FROM weekendv2_list
+              JOIN weekendv2_users ON user_id = weekendv2_users.id
               WHERE copy=0
               GROUP BY email
               ORDER BY total_uploaded DESC
@@ -217,7 +209,6 @@ class Room {
   }
 
   public function get_playlist_next_song() {
-    $result = $this->db->query("select id from weekendv2_playlist where room_id='{$this->get_id()}' AND id > {$this->get_currently_playing_id()} LIMIT 1");
     $query = "
       SELECT weekendv2_list.id AS id
       FROM weekendv2_list 

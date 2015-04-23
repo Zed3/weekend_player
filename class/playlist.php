@@ -6,12 +6,11 @@ class Playlist {
 
   public function set_item_report($id, $reason) {
     $safe_reason = $this->db->safe($reason);
-    $this->db->query("update weekendv2_playlist SET skip_reason='{$safe_reason}' where id='{$id}' LIMIT 1");
+    $this->db->query("update weekendv2_list SET skip_reason='{$safe_reason}' where id='{$id}' LIMIT 1");
   }
 
   public function add_copy($id) {
     $id = $this->db->safe($id);
-//    $this->db->query("INSERT INTO weekendv2_playlist (room_id, v, title, length, added_by_email, copy) SELECT room_id, v, title, length, added_by_email, '1' as copy FROM weekendv2_playlist WHERE id='{$id}' limit 1");
     $query = "
       INSERT INTO weekendv2_list (room_id, song_id, user_id, copy)
       SELECT room_id, song_id, user_id, '1' AS copy FROM weekendv2_list WHERE id=$id limit 1
@@ -31,7 +30,7 @@ class Playlist {
 
   public function remove_item($song_id) {
     $song_id = $this->db->safe($song_id);
-    $this->db->query("UPDATE weekendv2_playlist SET skip_reason='deleted' WHERE id='{$song_id}' LIMIT 1");
+    $this->db->query("UPDATE weekendv2_list SET skip_reason='deleted' WHERE id='{$song_id}' LIMIT 1");
   }
 
   public function add_item($room_id, $v, $title, $length, $added_by_email) {
@@ -56,19 +55,25 @@ class Playlist {
     //Add to room list
     $query = "INSERT INTO weekendv2_list SET room_id='$room_id', song_id='$id', user_id=$user_id";
     $this->db->query($query);
-
-    //legacy code
-    $this->db->query("insert into weekendv2_playlist (room_id, v, title, length, added_by_email) values ('{$room_id}', '{$v}', '{$safe_title}', '{$length}', '{$added_by_email}')");
   }
 
   public function is_already_last_in_playlist($room_id, $v) {
     $safe_v = $this->db->safe($v);
-    $result = $this->db->query("select v from weekendv2_playlist where room_id='$room_id' order by id desc limit 1");
+    $query = "
+      SELECT video_id
+      FROM weekendv2_list 
+      JOIN weekendv2_songs 
+      ON song_id = weekendv2_songs.id
+      WHERE room_id='$room_id' 
+      ORDER BY weekendv2_list.id DESC
+      LIMIT 1
+    ";
+    $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
     $row = $this->db->fetch($result);
-    return ($row['v'] == $safe_v ? true : false);
+    return ($row['video_id'] == $safe_v ? true : false);
   }
 
   public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
