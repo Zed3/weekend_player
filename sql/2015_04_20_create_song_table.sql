@@ -26,7 +26,7 @@ INSERT INTO weekendv2_songs (
     copy = 0
   GROUP BY v
   ORDER BY datetime DESC
-)
+);
 
 
 DROP TABLE IF EXISTS `weekendv2_list`;
@@ -54,5 +54,4 @@ SELECT
 FROM weekendv2_playlist
 JOIN weekendv2_users ON added_by_email = email
 JOIN weekendv2_songs ON v = video_id
-)
-
+);
