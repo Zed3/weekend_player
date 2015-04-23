@@ -26,7 +26,7 @@ if ($task == "report") {
   }
   switch ($kind) {
     case 'get_random_song':
-      $song = $room->get_random_song2();
+      $song = $room->get_random_song();
       send_data((object)["test" => $song]);
       break;
 

@@ -207,7 +207,7 @@ class Room {
     $time_margin = 10;
     $total_margin = 0 - $max_executing_time - $time_margin;
     // get current members:
-    $result = $this->db->query("select weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
+    $result = $this->db->query("select weekendv2_room_members.id as user_id, weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
     if (!$result) {
       return array();
     }
@@ -259,16 +259,34 @@ class Room {
   public function get_random_song() {
     //first, get current playing song info
     $room_id = $this->get_id();
+    $conds = [];
+    $random_online_members = $this->options['random_online_members'];
+    if ($random_online_members) {
+      global $config_server_poll_max_executing_time;
+      $members = $this->get_members($config_server_poll_max_executing_time);
+
+      foreach ($members as $member) {
+        $member_ids[] = $member['user_id'];
+      }
+
+      $member_ids = implode(',', $member_ids);
+      $conds[] = "user_id IN ($member_ids)";
+    }
+
+    if ($conds) { $conds = "AND " . implode("AND", $conds); } else $conds="";
+
     $query = "
       SELECT id
       FROM weekendv2_list 
       WHERE weekendv2_list.room_id=$room_id
       AND id<{$this->get_currently_playing_id()}
       AND skip_reason = 'played'
+      $conds
       GROUP BY song_id
       ORDER BY RAND()
       LIMIT 1
     ";
+
     $result = $this->db->query($query);
     if (!$result) {
       return false;
