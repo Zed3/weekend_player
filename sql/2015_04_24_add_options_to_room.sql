@@ -1,0 +1,1 @@
+ALTER TABLE `weekendv2_rooms` ADD `room_options` TEXT NULL ; 
