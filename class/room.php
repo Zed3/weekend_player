@@ -292,7 +292,7 @@ class Room {
 
     $random_positive_vote = $this->options['random_positive_vote'];
     if ($random_online_members) {
-      $conds[] = "vote > 0"; 
+      $conds[] = "vote >= 0"; 
     }
 
     if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
