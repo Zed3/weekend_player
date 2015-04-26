@@ -14,5 +14,4 @@ $Chat = new Chat($conn);
 $Playlist = new Playlist($db);
 
 session_start();
-
 ?>

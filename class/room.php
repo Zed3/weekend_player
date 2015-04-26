@@ -102,16 +102,16 @@ class Room {
   public function get_playlist() {
     $query = "
       SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id, copy
-      FROM weekendv2_list 
+      FROM weekendv2_list
       JOIN weekendv2_users
       ON weekendv2_list.user_id = weekendv2_users.id
-      JOIN weekendv2_songs 
+      JOIN weekendv2_songs
       ON weekendv2_list.song_id = weekendv2_songs.id
       WHERE skip_reason IS NULL
       AND weekendv2_list.room_id='{$this->get_id()}'
       AND weekendv2_list.id>='{$this->get_currently_playing_id()}'
       ORDER BY weekendv2_list.id DESC
-    ";    
+    ";
     $result = $this->db->query($query);
     if (!$result) {
       return array();
@@ -136,15 +136,15 @@ class Room {
   public function get_history() {
     $query = "
       SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id, copy
-      FROM weekendv2_list 
+      FROM weekendv2_list
       JOIN weekendv2_users
       ON weekendv2_list.user_id = weekendv2_users.id
-      JOIN weekendv2_songs 
+      JOIN weekendv2_songs
       ON weekendv2_list.song_id = weekendv2_songs.id
       WHERE weekendv2_list.room_id='{$this->get_id()}'
       AND weekendv2_list.id<'{$this->get_currently_playing_id()}'
       ORDER BY weekendv2_list.id DESC LIMIT 20
-    ";    
+    ";
     $result = $this->db->query($query);
     if (!$result) {
       return array();
@@ -240,10 +240,10 @@ class Room {
   public function get_playlist_next_song() {
     $query = "
       SELECT weekendv2_list.id AS id
-      FROM weekendv2_list 
-      JOIN weekendv2_songs 
+      FROM weekendv2_list
+      JOIN weekendv2_songs
       ON weekendv2_list.song_id = weekendv2_songs.id
-      WHERE weekendv2_list.room_id='{$this->get_id()}' 
+      WHERE weekendv2_list.room_id='{$this->get_id()}'
       AND weekendv2_list.id > {$this->get_currently_playing_id()} LIMIT 1
     ";
     $result = $this->db->query($query);
@@ -292,14 +292,14 @@ class Room {
 
     $random_positive_vote = $this->options['random_positive_vote'];
     if ($random_online_members) {
-      $conds[] = "vote >= 0"; 
+      $conds[] = "vote >= 0";
     }
 
     if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
 
     $query = "
       SELECT id
-      FROM weekendv2_list 
+      FROM weekendv2_list
       JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
 
       WHERE weekendv2_list.room_id=$room_id

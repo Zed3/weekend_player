@@ -88,7 +88,7 @@
       <td>Play random songs if the list is empty</td>
       <td>
         <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOn" name="player_admin_radio_state" value="1" onchange="set_admin_radio(this.value)" /> On</label>
-        <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOff" name="player_admin_radio_state" value="0" checked="checked" onchange="set_admin_radio(this.value)" /> Off</label>        
+        <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOff" name="player_admin_radio_state" value="0" checked="checked" onchange="set_admin_radio(this.value)" /> Off</label>
       </td>
     </tr>
     <tr>
@@ -199,5 +199,4 @@
 
   </div>
 </div>
-
 <?php require("footer.php"); ?>
