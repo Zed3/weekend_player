@@ -85,21 +85,27 @@ if ($task == "client") {
     $room->generate_update_version();
   }
 
-  if ($kind == "add") {
-    $room = $Rooms->get_room($room_id);
-    $video_id = $Rooms->clean_variable($_POST["video_id"]);
-    if (!$Playlist->is_already_last_in_playlist($room_id, $video_id)) {
-      if ($Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email())) {
-        // added
-        if ($room->check_if_should_skip()) {
-          $room->set_next_song($Playlist);
-        } else {
-          $room->generate_update_version();
+  try {
+    if ($kind == "add") {
+      $room = $Rooms->get_room($room_id);
+      $video_id = $Rooms->clean_variable($_POST["video_id"]);
+      if (!$Playlist->is_already_last_in_playlist($room_id, $video_id)) {
+        if ($Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email())) {
+          // added
+          if ($room->check_if_should_skip()) {
+            $room->set_next_song($Playlist);
+          } else {
+            $room->generate_update_version();
+          } // if
+          $result = true;
         } // if
-        $result = true;
       } // if
     } // if
-  } // if
+  } catch (Exception $e) {
+    send_data((object)[
+      "error" => $e->getMessage()
+    ]);
+  }
 
   if ($kind == "update_volume") {
     $room = $Rooms->get_room($room_id);
@@ -225,4 +231,3 @@ send_data((object)[
   "room_id" => $room_id,
   "members" => get_members_list($room)
 ]);
-?>

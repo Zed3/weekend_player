@@ -35,6 +35,7 @@ class Playlist {
 
   public function add_item($room_id, $v, $title, $length, $added_by_email) {
     $safe_title = $this->db->safe($title);
+    if (!$safe_title)  throw new Exception('No title');
 
     $user_email = $this->db->safe($added_by_email);
     $user_id = $this->db->get_user_id_by_email($user_email);
@@ -42,15 +43,17 @@ class Playlist {
     //Search if the song exists in DB
     $query = "SELECT id FROM weekendv2_songs WHERE video_id='$v' LIMIT 1";
     $result = $this->db->query($query);
-    if ($result){
+    if ($result->num_rows){
       $row = $this->db->fetch($result);
       $id = $row['id'];
     } else {
       //Insert new song
       $query = "INSERT INTO weekendv2_songs SET video_id='$v', title='$safe_title', length=$length";
       $this->db->query($query);
-      $id = $this->db->insert_id;
+      $id = $this->db->last_id();
     }
+
+    if (!$id)  throw new Exception('No ID');
 
     //Add to room list
     $query = "INSERT INTO weekendv2_list SET room_id='$room_id', song_id='$id', user_id=$user_id";
@@ -81,14 +84,20 @@ class Playlist {
     if  (strlen($safe_v) != 11) {
       return false;
     }
-    //$response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
-    $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
+    // $response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
+    // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
+
+$ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
+curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+$response = curl_exec($ch);
+
     if ($response) {
       //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
       preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
 
       $title = $matches[2];
       $title = str_replace("'","",$title);
+      if (!$title) return false;
       preg_match("/(<yt:duration seconds=')(\d+)('\/>)/",$response, $matches);
       $length = $matches[2];
 
