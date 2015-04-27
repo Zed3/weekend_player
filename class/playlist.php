@@ -47,7 +47,7 @@ class Playlist {
 
   public function add_item($room_id, $v, $title, $length, $added_by_email) {
     $safe_title = $this->db->safe($title);
-    if (!$safe_title)  throw new Exception('No title');
+//    if (!$safe_title)  throw new Exception('No title');
 
     $user_email = $this->db->safe($added_by_email);
     $user_id = $this->db->get_user_id_by_email($user_email);
@@ -123,13 +123,13 @@ public function get_youtube($url){
     // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
-      $this->add_item($room_id, $v, '', '', $user_email);
+      $this->add_item($room_id, $safe_v, '', '', $user_email);
     }
 
 // $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
 // curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
 // $response = curl_exec($ch);
-    $response = $this->get_youtube_data($v);
+    $response = $this->get_youtube_data($safe_v);
 
     if ($response) {
 
@@ -153,12 +153,12 @@ public function get_youtube($url){
       // $title = str_replace("'","",$title);
 
       if (!$title) {
-        throw new Exception("Could not read title");
+        throw new Exception("Could not read title for v=" . $safe_v );
       }
 
       // preg_match("/(<yt:duration seconds=')(\d+)('\/>)/",$response, $matches);
       // $length = $matches[2];
-      $this->add_item($room_id, $v, $title, $length, $user_email);
+      $this->add_item($room_id, $safe_v, $title, $length, $user_email);
 
       return true;
     }
