@@ -143,7 +143,7 @@ class Room {
       ON weekendv2_list.song_id = weekendv2_songs.id
       WHERE weekendv2_list.room_id='{$this->get_id()}'
       AND weekendv2_list.id<'{$this->get_currently_playing_id()}'
-      ORDER BY weekendv2_list.id DESC LIMIT 20
+      ORDER BY weekendv2_list.id DESC LIMIT 50
     ";
     $result = $this->db->query($query);
     if (!$result) {
@@ -275,6 +275,7 @@ class Room {
     //first, get current playing song info
     $room_id = $this->get_id();
     $conds = [];
+    $havings = [];
     $random_online_members = $this->options['random_online_members'];
     $random_positive_vote = $this->options['random_positive_vote'];
 
@@ -292,13 +293,14 @@ class Room {
 
     $random_positive_vote = $this->options['random_positive_vote'];
     if ($random_online_members) {
-      $conds[] = "vote >= 0";
+      $havings[] = "votes >= 0";
     }
 
     if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
+    if ($havings) { $havings = "HAVING " . implode(" AND ", $havings); } else $havings="";
 
     $query = "
-      SELECT id
+      SELECT id, vote AS votes
       FROM weekendv2_list
       LEFT JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
 
@@ -307,6 +309,7 @@ class Room {
       AND skip_reason = 'played'
       $conds
       GROUP BY song_id
+      $havings
       ORDER BY RAND()
       LIMIT 1
     ";
