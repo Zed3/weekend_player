@@ -99,7 +99,7 @@
       </td>
     </tr>
     <tr>
-      <td>Choose song with positive votes only</td>
+      <td>Choose song without negative votes only</td>
       <td>
         <label class="radio-inline"><input type="radio" name="random_positive_vote" id="random_positive_vote_1" value="1" onchange="Room.set_option(this.name, this.value)"> On</label>
         <label class="radio-inline"><input type="radio" name="random_positive_vote" id="random_positive_vote_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
