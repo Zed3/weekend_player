@@ -24,7 +24,7 @@ $(document).ready(function() {
         var max_results = 5;
         // Youtube API
         var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
-        if (keyword.length < 5){ return; }
+        if (keyword.length < 5000){ return; }
 
         $.ajax({
             type: "GET",
@@ -257,7 +257,7 @@ function parsePollingData(data) {
     redraw_admin_radio(data["admin_radio"]);
 }
 
-function update_options(options){ 
+function update_options(options){
     for (var setting in options) {
         var element_id = setting + '_' + options[setting];
         //TODO: currently supports radios only
