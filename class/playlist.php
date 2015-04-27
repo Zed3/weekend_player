@@ -84,12 +84,33 @@ class Playlist {
       ORDER BY weekendv2_list.id DESC
       LIMIT 1
     ";
+    throw new Exception($query);
     $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
     return $result->num_rows;
   }
+
+public function get_youtube_data($v){
+  $youtube = "http://gdata.youtube.com/feeds/api/videos/" . $v . "?v=2&alt=jsonc";
+  $curl = curl_init($youtube);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  $return = curl_exec($curl);
+  curl_close($curl);
+  return json_decode($return, true);
+}
+
+
+public function get_youtube($url){
+  $youtube = "http://www.youtube.com/oembed?url=". $url ."&format=json";
+  $curl = curl_init($youtube);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  $return = curl_exec($curl);
+  curl_close($curl);
+  return json_decode($return, true);
+}
+
 
   public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
 
@@ -104,33 +125,38 @@ class Playlist {
       $this->add_item($room_id, $v, $title, $length, $user_email);
     }
 
-$ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
-curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-$response = curl_exec($ch);
-
+// $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
+// curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
+// $response = curl_exec($ch);
+$response = $this->get_youtube_data($v);
+throw new Exception($response);
     if ($response) {
+
       //catch API erros
       preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
       if ($matches) {
         throw new Exception($response);
       }
 
-      //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
-      preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
+$title = $response["data"]["title"];
+$length = $response["data"]["duration"];
 
-      if (!$matches) {
-        preg_match("/(<media:title.*>)(.*)(<\\\/media:title>)/",$response, $matches);
-      }
+      // //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
+      // preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
 
-      $title = $matches[2];
-      $title = str_replace("'","",$title);
+      // if (!$matches) {
+      //   preg_match("/(<media:title.*>)(.*)(<\\\/media:title>)/",$response, $matches);
+      // }
+
+      // $title = $matches[2];
+      // $title = str_replace("'","",$title);
 
       if (!$title) {
         throw new Exception("Could not read title");
       }
 
-      preg_match("/(<yt:duration seconds=')(\d+)('\/>)/",$response, $matches);
-      $length = $matches[2];
+      // preg_match("/(<yt:duration seconds=')(\d+)('\/>)/",$response, $matches);
+      // $length = $matches[2];
       $this->add_item($room_id, $v, $title, $length, $user_email);
 
       return true;

@@ -18,40 +18,40 @@ var player;
 
 $(document).ready(function() {
     //Create dynamic youtube search
-    $("#url_youtube").keyup(function(){
-        var search_input = $(this).val();
-        var keyword = encodeURIComponent(search_input);
-        var max_results = 5;
-        // Youtube API
-        var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
-        if (keyword.length < 5000){ return; }
+    // $("#url_youtube").keyup(function(){
+    //     var search_input = $(this).val();
+    //     var keyword = encodeURIComponent(search_input);
+    //     var max_results = 5;
+    //     // Youtube API
+    //     var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
+    //     if (keyword.length < 5){ return; }
 
-        $.ajax({
-            type: "GET",
-            url: yt_url,
-            dataType:"jsonp",
-            success: function(response){
-                if(response.data.items){
-                    var results = "";
-                    $.each(response.data.items, function(i,data){
-                        var video_id = data.id;
-                        var video_title = data.title;
-                        var video_viewCount = data.viewCount;
-                        var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
-                    });
+    //     $.ajax({
+    //         type: "GET",
+    //         url: yt_url,
+    //         dataType:"jsonp",
+    //         success: function(response){
+    //             if(response.data.items){
+    //                 var results = "";
+    //                 $.each(response.data.items, function(i,data){
+    //                     var video_id = data.id;
+    //                     var video_title = data.title;
+    //                     var video_viewCount = data.viewCount;
+    //                     var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
+    //                     results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
+    //                 });
 
-                    var re = new RegExp(keyword, 'gi');
-                    results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
+    //                 var re = new RegExp(keyword, 'gi');
+    //                 results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
 
-                    results = "<div class='list-group'>" + results + "</div>";
-                    $("#search_results").html(results);
-                } else {
-                    $("#search_results").html("Nothing was found :(");
-                }
-            }
-        });
-    });
+    //                 results = "<div class='list-group'>" + results + "</div>";
+    //                 $("#search_results").html(results);
+    //             } else {
+    //                 $("#search_results").html("Nothing was found :(");
+    //             }
+    //         }
+    //     });
+    // });
 
 ////////////////////
 
