@@ -68,6 +68,7 @@ class Playlist {
       JOIN weekendv2_songs
       ON song_id = weekendv2_songs.id
       WHERE room_id='$room_id'
+      AND video_id = '$safe_v'
       ORDER BY weekendv2_list.id DESC
       LIMIT 1
     ";
@@ -75,11 +76,11 @@ class Playlist {
     if (!$result) {
       return false;
     }
-    $row = $this->db->fetch($result);
-    return ($row['video_id'] == $safe_v ? true : false);
+    return $result->num_rows;
   }
 
   public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
+
     $safe_v = $this->db->safe($v);
     if  (strlen($safe_v) != 11) {
       return false;
@@ -92,15 +93,28 @@ curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
 $response = curl_exec($ch);
 
     if ($response) {
+      //catch API erros
+      preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
+      if ($matches) {
+        throw new Exception($response);
+      }
+
       //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
       preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
 
+      if (!$matches) {
+        preg_match("/(<media:title.*>)(.*)(<\\\/media:title>)/",$response, $matches);
+      }
+
       $title = $matches[2];
       $title = str_replace("'","",$title);
-      if (!$title) return false;
+
+      if (!$title) {
+        throw new Exception("Could not read title");
+      }
+
       preg_match("/(<yt:duration seconds=')(\d+)('\/>)/",$response, $matches);
       $length = $matches[2];
-
       $this->add_item($room_id, $v, $title, $length, $user_email);
 
       return true;
