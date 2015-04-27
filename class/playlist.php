@@ -162,7 +162,7 @@ public function get_youtube($url){
 
       return true;
     } else {
-      throw new Exception(json_encode($response));
+      throw new Exception("error parsing youtube response");
     }
     return false;
   }

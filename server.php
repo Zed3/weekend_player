@@ -95,9 +95,9 @@ if ($task == "client") {
           if ($room->check_if_should_skip()) {
             $room->set_next_song($Playlist);
           } else {
-            $room->generate_update_version();
           } // if
           $result = true;
+          $room->generate_update_version();
         } // if
       } // if
     } // if
