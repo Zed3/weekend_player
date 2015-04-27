@@ -123,7 +123,7 @@ public function get_youtube($url){
     // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
-      //$this->add_item($room_id, $safe_v, '', '', $user_email);
+      $this->add_item($room_id, $safe_v, '', '', $user_email);
     }
 
 // $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
@@ -131,7 +131,7 @@ public function get_youtube($url){
 // $response = curl_exec($ch);
     $response = $this->get_youtube_data($safe_v);
 
-    if ($response) {
+    if ($response["data"]) {
 
       //catch API erros
       // preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
@@ -161,6 +161,8 @@ public function get_youtube($url){
       $this->add_item($room_id, $safe_v, $title, $length, $user_email);
 
       return true;
+    } else {
+      throw new Exception(json_encode($response));
     }
     return false;
   }
