@@ -33,6 +33,18 @@ class Playlist {
     $this->db->query("UPDATE weekendv2_list SET skip_reason='deleted' WHERE id='{$song_id}' LIMIT 1");
   }
 
+  public function find_in_list($v) {
+    $id = 0;
+    $v = $this->db->safe($v);
+    $query = "SELECT id FROM weekendv2_songs WHERE video_id='$v' LIMIT 1";
+    $result = $this->db->query($query);
+    if ($result->num_rows){
+      $row = $this->db->fetch($result);
+      $id = $row['id'];
+    }
+    return $id;
+  }
+
   public function add_item($room_id, $v, $title, $length, $added_by_email) {
     $safe_title = $this->db->safe($title);
     if (!$safe_title)  throw new Exception('No title');
@@ -87,6 +99,10 @@ class Playlist {
     }
     // $response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
     // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
+    $id = $this->find_in_list($safe_v); //TODO fix this into loop
+    if ($id) {
+      $this->add_item($room_id, $v, $title, $length, $user_email);
+    }
 
 $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
 curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
