@@ -300,7 +300,7 @@ class Room {
     $query = "
       SELECT id
       FROM weekendv2_list
-      JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
+      LEFT JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
 
       WHERE weekendv2_list.room_id=$room_id
       AND id<{$this->get_currently_playing_id()}
