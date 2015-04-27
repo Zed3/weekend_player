@@ -123,7 +123,7 @@ public function get_youtube($url){
     // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
-      $this->add_item($room_id, $safe_v, '', '', $user_email);
+      //$this->add_item($room_id, $safe_v, '', '', $user_email);
     }
 
 // $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
