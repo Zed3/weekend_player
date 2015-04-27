@@ -75,22 +75,23 @@ class Playlist {
   public function is_already_last_in_playlist($room_id, $v) {
     $safe_v = $this->db->safe($v);
     $query = "
-      SELECT video_id
-      FROM weekendv2_list
-      JOIN weekendv2_songs
-      ON song_id = weekendv2_songs.id
-      WHERE room_id='$room_id'
-      AND video_id = '$safe_v'
-      ORDER BY weekendv2_list.id DESC
-      LIMIT 1
-    ";
-    throw new Exception($query);
+          SELECT video_id
+          FROM weekendv2_list
+          JOIN weekendv2_songs
+          ON song_id = weekendv2_songs.id
+          WHERE room_id='$room_id'
+          ORDER BY weekendv2_list.id DESC
+          LIMIT 1
+        ";
+
     $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
-    return $result->num_rows;
+    $row = $this->db->fetch($result);
+    return ($row['video_id'] == $safe_v ? true : false);
   }
+
 
 public function get_youtube_data($v){
   $youtube = "http://gdata.youtube.com/feeds/api/videos/" . $v . "?v=2&alt=jsonc";
@@ -122,24 +123,24 @@ public function get_youtube($url){
     // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
-      $this->add_item($room_id, $v, $title, $length, $user_email);
+      $this->add_item($room_id, $v, '', '', $user_email);
     }
 
 // $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
 // curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
 // $response = curl_exec($ch);
-$response = $this->get_youtube_data($v);
-throw new Exception($response);
+    $response = $this->get_youtube_data($v);
+
     if ($response) {
 
       //catch API erros
-      preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
-      if ($matches) {
-        throw new Exception($response);
-      }
+      // preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
+      // if ($matches) {
+      //   throw new Exception($response);
+      // }
 
-$title = $response["data"]["title"];
-$length = $response["data"]["duration"];
+      $title = $response["data"]["title"];
+      $length = $response["data"]["duration"];
 
       // //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
       // preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
