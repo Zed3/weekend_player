@@ -138,8 +138,10 @@ public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
       $title = $video->snippet->title;
 
       $youtube_time = $video->contentDetails->duration;
-      $time = DateInterval($youtube_time);
+      $time = new DateInterval($youtube_time);
       $length = ($time->y * 365 * 24 * 60 * 60) + ($time->m * 30 * 24 * 60 * 60) + ($time->d * 24 * 60 * 60) + ($time->h * 60 * 60) + ($time->i * 60) + $time->s;
+
+      $length = 0;
 
       if (!$title) {
         throw new Exception("Could not read title for v=" . $safe_v );
