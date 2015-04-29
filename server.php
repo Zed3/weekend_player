@@ -89,18 +89,16 @@ if ($task == "client") {
     if ($kind == "add") {
       $room = $Rooms->get_room($room_id);
       $video_id = $Rooms->clean_variable($_POST["video_id"]);
-      if (!$Playlist->is_already_last_in_playlist($room_id, $video_id)) {
-        if ($Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email())) {
+      if ($Playlist->is_already_last_in_playlist($room_id, $video_id)) throw new Exception("Song is already last in list");
+      $Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email());
           // added
           if ($room->check_if_should_skip()) {
             $room->set_next_song($Playlist);
           } else {
+            $room->generate_update_version();
           } // if
           $result = true;
-          $room->generate_update_version();
         } // if
-      } // if
-    } // if
   } catch (Exception $e) {
     send_data((object)[
       "error" => $e->getMessage()

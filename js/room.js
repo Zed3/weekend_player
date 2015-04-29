@@ -609,6 +609,17 @@ function add_youtube_video(address) {
             $("#div_loading_area").addClass("add_new_form_loading_hide");
             $("#url_youtube").val('');
             $("#search_results").html('');
+
+            var result = data.responseJSON;
+            if (result.error) {
+                Message.addAlert(result.error, "error");
+            }
+
+            if (result.result == false) {
+                Message.addAlert("Could not add song", "warning");
+            } else if (result.result == true) {
+                Message.addAlert("Added song", "success");
+            }
         },
         dataType: "json",
         timeout: 60000
