@@ -95,8 +95,14 @@ class Playlist {
 
 public function get_youtube_data($v){
   $youtube = "http://gdata.youtube.com/feeds/api/videos/" . $v . "?v=2&alt=jsonc";
-  $curl = curl_init($youtube);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+  $agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+
+  $curl = curl_init();
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+  curl_setopt($ch, CURLOPT_VERBOSE, true);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_USERAGENT, $agent);
+  curl_setopt($ch, CURLOPT_URL, $youtube);
   $return = curl_exec($curl);
   curl_close($curl);
   return json_decode($return, true);
