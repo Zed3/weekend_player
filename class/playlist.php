@@ -104,7 +104,7 @@ public function get_youtube_data($v){
   curl_setopt($curl, CURLOPT_USERAGENT, $agent);
   curl_setopt($curl, CURLOPT_URL, $youtube);
   $return = curl_exec($curl);
-  curl_close($curl);
+  log::debug($return);
   return json_decode($return, true);
 }
 
