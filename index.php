@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "startup.php";
 $error_message = "";
 if (!$Users->is_auth()) {
@@ -11,7 +11,7 @@ require("header.php");
 <div class="container">
   <h1>Virtual rooms list</h1>
   <h4><a href="create_room.php">Create new room</a></h4>
-  <?
+  <?php
 
   $rooms_list = $Rooms->get_list();
   echo "<h1>";
@@ -26,12 +26,12 @@ require("header.php");
         (<?=($members_count > 0 ? "{$members_count} active members" : "no active members")?>)
       </span>
     </a>
-    <?
+    <?php
       echo "<br /><br />";
   }
   echo "</h1>";
   ?>
 </div>
-<?
+<?php
 require("footer.php");
 ?>

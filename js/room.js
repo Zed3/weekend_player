@@ -58,7 +58,24 @@ $(document).ready(function() {
 
 } );
 var Room = {
-    members: []
+    members: [],
+    set_option: function (key, value) {
+        $("#shared_radio .panel-heading").append('<span id="load">__</span>');
+        $('#load').fadeIn('normal');
+        $.ajax({
+            url: "server.php?" + generate_ajax_key(),
+            type: "POST",
+            data: {
+                "id": room_id,
+                "task": "client",
+                "kind": "update_option",
+                "key": key,
+                "value": value
+            },
+            dataType: "json",
+            timeout: 60000
+        });
+    }
 };
 
 function onYouTubeIframeAPIReady() {
@@ -236,7 +253,17 @@ function parsePollingData(data) {
     update_lists_info(playlist, history, members);
     redraw_admin_volume(data["admin_volume"]);
     update_stats(data["stats"]);
+    update_options(data["room_options"]);
     redraw_admin_radio(data["admin_radio"]);
+}
+
+function update_options(options){
+    for (var setting in options) {
+        var element_id = setting + '_' + options[setting];
+        //TODO: currently supports radios only
+        $("#" + element_id)[0].checked = "checked";
+    }
+    $('#load').fadeOut('normal');
 }
 
 function update_stats(data) {
@@ -383,22 +410,22 @@ function create_table_data(table, list) {
             title = "<span class='glyphicon glyphicon-play'></span> " + title;
         }
 
-        var song_id = one["id"];
-        var added_by_email = one["added_by_email"];
+        var song_id = one["song_id"];
         var datetime = one["datetime"];
         var votes = one["votes"];
+        var total_played = one["total_played"];
         var skip_reason = one["skip_reason"];
         var user_name = one["user_name"];
         var length = one["length"];
         var copy = one["copy"];
-        var youtube_url = "https://www.youtube.com/watch?v=" + v;
+        if (copy === '1') { title += ' <span class="label label-default">Bot</span>' };
 
-
+    var youtube_url = "https://www.youtube.com/watch?v=" + v;
     var buttons = "";
-
+    var requeue = " <a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"" + youtube_url + "\")'></span></a>" ;
 
     table_row += "<tr" + tr_class + ">" +
-        "<td>" + title + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
+        "<td>" + title + requeue + "</td><td>" + total_played + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
         "<td>" +
           "<a href='#'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true' onclick='vote_video(" + song_id + ", 1)'></span></a>" +
           " <span class='badge'>" + votes + "</span> " +

@@ -77,17 +77,39 @@
         <input type="range" class="admin_volume_slider" id="player_admin_volume_slider" min="0" max="100" value="100" step="1" onchange="set_admin_volume(this.value)">
       </div>
       </div>
-      <div class="panel panel-primary">
+
+      <div class="panel panel-primary" id="shared_radio">
         <div class="panel-heading">Shared Radio state (<span id="admin_radio_state">Off</span>):</div>
         <div class="panel-body">
-        <input type="radio" class="admin_radio_state" id="player_admin_radio_stateOff" name="player_admin_radio_state" value="0" checked="checked" onchange="set_admin_radio(this.value)" />
-        <label for="0">Off</label>
-        <input type="radio" class="admin_radio_state" id="player_admin_radio_stateOn" name="player_admin_radio_state" value="1" onchange="set_admin_radio(this.value)" />
-        <label for="1">On</label>
-        <div style="
-            font-size: 9pt;
-            text-align: center;
-        ">( play random songs from the history when the list is empty, this is a shared option and not private. )</div>
+
+<div id="room_options"></div>
+<table class="table table-hover table-striped">
+  <tbody>
+
+    <tr>
+      <td>Play random songs if the list is empty</td>
+      <td>
+        <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOn" name="player_admin_radio_state" value="1" onchange="set_admin_radio(this.value)" /> On</label>
+        <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOff" name="player_admin_radio_state" value="0" checked="checked" onchange="set_admin_radio(this.value)" /> Off</label>
+      </td>
+    </tr>
+    <tr>
+      <td>Choose song from online members only</td>
+      <td>
+        <label class="radio-inline"><input type="radio" name="random_online_members" id="random_online_members_1" value="1" onchange="Room.set_option(this.name, this.value)"> On</label>
+        <label class="radio-inline"><input type="radio" name="random_online_members" id="random_online_members_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
+      </td>
+    </tr>
+    <tr>
+      <td>Choose song without negative votes only</td>
+      <td>
+        <label class="radio-inline"><input type="radio" name="random_positive_vote" id="random_positive_vote_1" value="1" onchange="Room.set_option(this.name, this.value)"> On</label>
+        <label class="radio-inline"><input type="radio" name="random_positive_vote" id="random_positive_vote_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
       </div>
       </div>
       <div class="panel panel-primary">
@@ -179,5 +201,4 @@
 
   </div>
 </div>
-
-<? require("footer.php"); ?>
+<?php require("footer.php"); ?>

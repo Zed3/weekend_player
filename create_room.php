@@ -1,4 +1,4 @@
-<?
+<?php
 require_once "startup.php";
 $error_message = "";
 if (!$Users->is_auth()) {
@@ -28,7 +28,7 @@ require("header.php");
 <div class="container">
   <h1>Create new room</h1>
 
-  <?if ($error_message != "") { ?><div><h3>Error: <?=$error_message?><h3></div><? } ?>
+  <?php if ($error_message != "") { ?><div><h3>Error: <?=$error_message?><h3></div><?php } ?>
   <form class="form-signin" role="form" method="POST" name="weekend_youtube_player">
     <h2 class="form-signin-heading">Room name</h2>
     <input type="hidden" name="todo" value="create">
@@ -37,6 +37,6 @@ require("header.php");
     <button class="btn btn-lg btn-primary btn-block" type="submit">Create</button>
   </form>
 </div>
-<?
+<?php
 require("footer.php");
 ?>

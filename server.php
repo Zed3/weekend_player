@@ -25,6 +25,11 @@ if ($task == "report") {
     die("access denied");
   }
   switch ($kind) {
+    case 'get_random_song':
+      $song = $room->get_random_song();
+      send_data((object)["test" => $song]);
+      break;
+
     case 'player_error':
       $Playlist->set_item_report($room->get_currently_playing_id(), $Rooms->clean_variable($_POST["reason"]));
       $room->set_next_song($Playlist);
@@ -54,6 +59,15 @@ if ($task == "chat") {
 
 if ($task == "client") {
   $result = false;
+  if ($kind == "update_option") {
+    $room = $Rooms->get_room($room_id);
+    $key = $Rooms->clean_variable($_POST["key"]);
+    $value = $Rooms->clean_variable($_POST["value"]);
+    $room->update_option($key, $value);
+    $result = true;
+    $room->generate_update_version();
+  }
+
   if ($kind == "vote") {
     $room = $Rooms->get_room($room_id);
     $video_id = $Rooms->clean_variable($_POST["video_id"]);
@@ -71,21 +85,27 @@ if ($task == "client") {
     $room->generate_update_version();
   }
 
-  if ($kind == "add") {
-    $room = $Rooms->get_room($room_id);
-    $video_id = $Rooms->clean_variable($_POST["video_id"]);
-    if (!$Playlist->is_already_last_in_playlist($room_id, $video_id)) {
-      if ($Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email())) {
-        // added
-        if ($room->check_if_should_skip()) {
-          $room->set_next_song($Playlist);
-        } else {
+  try {
+    if ($kind == "add") {
+      $room = $Rooms->get_room($room_id);
+      $video_id = $Rooms->clean_variable($_POST["video_id"]);
+      if (!$Playlist->is_already_last_in_playlist($room_id, $video_id)) {
+        if ($Playlist->fetch_youtube_video_and_add($room_id, $video_id, $Users->get_auth_email())) {
+          // added
+          if ($room->check_if_should_skip()) {
+            $room->set_next_song($Playlist);
+          } else {
+          } // if
+          $result = true;
           $room->generate_update_version();
         } // if
-        $result = true;
       } // if
     } // if
-  } // if
+  } catch (Exception $e) {
+    send_data((object)[
+      "error" => $e->getMessage()
+    ]);
+  }
 
   if ($kind == "update_volume") {
     $room = $Rooms->get_room($room_id);
@@ -136,6 +156,7 @@ function new_playlist_data($room_id, $update_version) {
 function fetch_data($room) {
   global $db;
   $data = array(
+    "room_options" => $room->get_options(),
     "update_version" => $room->get_update_version(),
     "currently_playing_id" => $room->get_currently_playing_id(),
     "playlist" => $room->get_playlist(),
@@ -189,6 +210,7 @@ while (!is_timeout($start_time, $config_server_poll_max_executing_time)) {
     send_data((object)[
       "timeout" => false,
       "room_id" => $room_id,
+      "room_options" => $data["room_options"],
       "update_version" => $data["update_version"],
       "currently_playing_id" => $data["currently_playing_id"],
       "playlist" => $data["playlist"],
@@ -209,4 +231,3 @@ send_data((object)[
   "room_id" => $room_id,
   "members" => get_members_list($room)
 ]);
-?>

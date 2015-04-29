@@ -1,4 +1,4 @@
-<?
+<?php
 class Room {
   private $id;
   private $owner_email;
@@ -18,7 +18,21 @@ class Room {
       $this->name = $row["name"];
       $this->currently_playing_id = $row["currently_playing_id"];
       $this->update_version = $row["update_version"];
+      $this->options = json_decode($row["room_options"], true);
     }
+  }
+
+  public function update_option($key, $val) {
+    $options = $this->options;
+    $options[$key] = $val;
+    $this->options = $options;
+    $this->update_options();
+  }
+
+  private function update_options() {
+    $options = json_encode($this->options);
+    $query = "UPDATE weekendv2_rooms SET room_options='$options' WHERE id={$this->id} LIMIT 1";
+    $this->db->query($query);
   }
 
   public function get_id() {
@@ -27,6 +41,10 @@ class Room {
 
   public function get_owner_email() {
     return $this->owner_email;
+  }
+
+  public function get_options() {
+    return $this->options;
   }
 
   public function get_owner_name() {
@@ -82,21 +100,33 @@ class Room {
   }
 
   public function get_playlist() {
-    $result = $this->db->query("select weekendv2_playlist.*,weekendv2_users.name as user_name from weekendv2_playlist
-      left join weekendv2_users on (weekendv2_users.email=weekendv2_playlist.added_by_email)
-      WHERE weekendv2_playlist.room_id='{$this->get_id()}'
-      AND weekendv2_playlist.id>='{$this->get_currently_playing_id()}'
-      AND skip_reason IS NULL
-      ORDER BY weekendv2_playlist.id DESC");
+    $query = "
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id, copy
+      FROM weekendv2_list
+      JOIN weekendv2_users
+      ON weekendv2_list.user_id = weekendv2_users.id
+      JOIN weekendv2_songs
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE skip_reason IS NULL
+      AND weekendv2_list.room_id='{$this->get_id()}'
+      AND weekendv2_list.id>='{$this->get_currently_playing_id()}'
+      ORDER BY weekendv2_list.id DESC
+    ";
+    $result = $this->db->query($query);
     if (!$result) {
       return array();
     }
     $list = array();
     while ($row = $this->db->fetch($result)) {
+      $song_id = $row["song_id"];
       //get votes for each item
-      $song_id = $row["id"];
       $vote = $this->db->fetch($this->db->query("SELECT IFNULL(SUM(value), 0) AS total FROM weekendv2_votes WHERE song_id = $song_id"));
       $row['votes'] = $vote['total'];
+
+      //get plays for each item
+      $vote = $this->db->fetch($this->db->query("SELECT COUNT(*) AS total_played FROM weekendv2_list WHERE song_id = $song_id"));
+      $row['total_played'] = $vote['total_played'];
+
       $list[] = $row;
     }
 
@@ -104,27 +134,44 @@ class Room {
   }
 
   public function get_history() {
-    $result = $this->db->query("select weekendv2_playlist.*,weekendv2_users.name as user_name from weekendv2_playlist left join weekendv2_users on (weekendv2_users.email=weekendv2_playlist.added_by_email) where weekendv2_playlist.room_id='{$this->get_id()}' AND weekendv2_playlist.id<'{$this->get_currently_playing_id()}' order by weekendv2_playlist.id desc limit 20");
+    $query = "
+      SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id, copy
+      FROM weekendv2_list
+      JOIN weekendv2_users
+      ON weekendv2_list.user_id = weekendv2_users.id
+      JOIN weekendv2_songs
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE weekendv2_list.room_id='{$this->get_id()}'
+      AND weekendv2_list.id<'{$this->get_currently_playing_id()}'
+      ORDER BY weekendv2_list.id DESC LIMIT 50
+    ";
+    $result = $this->db->query($query);
     if (!$result) {
       return array();
     }
     $list = array();
     while ($row = $this->db->fetch($result)) {
+      $song_id = $row["song_id"];
       //get votes for each item
-      $song_id = $row["id"];
       $vote = $this->db->fetch($this->db->query("SELECT IFNULL(SUM(value), 0) AS total FROM weekendv2_votes WHERE song_id = $song_id"));
       $row['votes'] = $vote['total'];
+
+      //get plays for each item
+      $vote = $this->db->fetch($this->db->query("SELECT COUNT(*) AS total_played FROM weekendv2_list WHERE song_id = $song_id"));
+      $row['total_played'] = $vote['total_played'];
+
       $list[] = $row;
     }
+
 //    $list = array_reverse($list);
     return $list;
   }
 
   public function get_stats() {
     $room_id = $this->get_id();
-    $query = "SELECT weekendv2_users.id, name, email, COUNT(*) AS total_uploaded
-              FROM weekendv2_playlist
-              JOIN weekendv2_users ON added_by_email = email
+    $query = "SELECT weekendv2_users.id, name, COUNT(*) AS total_uploaded
+              FROM weekendv2_list
+              JOIN weekendv2_users ON user_id = weekendv2_users.id
               WHERE copy=0
               GROUP BY email
               ORDER BY total_uploaded DESC
@@ -175,7 +222,7 @@ class Room {
     $time_margin = 10;
     $total_margin = 0 - $max_executing_time - $time_margin;
     // get current members:
-    $result = $this->db->query("select weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
+    $result = $this->db->query("select weekendv2_room_members.id as user_id, weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
     if (!$result) {
       return array();
     }
@@ -191,7 +238,15 @@ class Room {
   }
 
   public function get_playlist_next_song() {
-    $result = $this->db->query("select id from weekendv2_playlist where room_id='{$this->get_id()}' AND id > {$this->get_currently_playing_id()} LIMIT 1");
+    $query = "
+      SELECT weekendv2_list.id AS id
+      FROM weekendv2_list
+      JOIN weekendv2_songs
+      ON weekendv2_list.song_id = weekendv2_songs.id
+      WHERE weekendv2_list.room_id='{$this->get_id()}'
+      AND weekendv2_list.id > {$this->get_currently_playing_id()} LIMIT 1
+    ";
+    $result = $this->db->query($query);
     if (!$result) {
       return false;
     }
@@ -205,7 +260,7 @@ class Room {
     if ($this->get_currently_playing_id() == '0') {
 	return true;
     }
-    $sql = "SELECT `currently_playing_id` FROM  `weekendv2_rooms` INNER JOIN weekendv2_playlist ON weekendv2_playlist.id = weekendv2_rooms.currently_playing_id WHERE `weekendv2_rooms`.id='{$this->get_id()}' AND weekendv2_playlist.skip_reason IS NOT NULL";
+    $sql = "SELECT `currently_playing_id` FROM  `weekendv2_rooms` INNER JOIN weekendv2_list ON weekendv2_list.id = weekendv2_rooms.currently_playing_id WHERE `weekendv2_rooms`.id='{$this->get_id()}' AND weekendv2_list.skip_reason IS NOT NULL";
     $result = $this->db->query($sql);
     if (!$result) {
       return false;
@@ -217,27 +272,58 @@ class Room {
   }
 
   public function get_random_song() {
-    // get random song and it must be different then the last played one.
-    $sql = "select count(id) as cc from weekendv2_playlist where room_id='{$this->get_id()}' AND copy='0' AND skip_reason='played' AND id < {$this->get_currently_playing_id()}";
-    $result = $this->db->query($sql);
-    if (!$result) {
-      return false;
-    }
-    if (!$row = $this->db->fetch($result)) {
-      return false;
-    }
-    $count = intval($row["cc"]);
-    $random_offset = mt_rand(0, $count - 1);
-    $sql = "select id from weekendv2_playlist where room_id='{$this->get_id()}' AND copy='0' AND skip_reason='played' AND id < {$this->get_currently_playing_id()} LIMIT {$random_offset},1";
-    $result = $this->db->query($sql);
-    if (!$result) {
-      return false;
-    }
-    if (!$row = $this->db->fetch($result)) {
-      return false;
+    //first, get current playing song info
+    $room_id = $this->get_id();
+    $conds = [];
+    $havings = [];
+    $random_online_members = $this->options['random_online_members'];
+    $random_positive_vote = $this->options['random_positive_vote'];
+
+    if ($random_online_members) {
+      global $config_server_poll_max_executing_time;
+      $members = $this->get_members($config_server_poll_max_executing_time);
+
+      foreach ($members as $member) {
+        $member_ids[] = $member['user_id'];
+      }
+
+      $member_ids = implode(',', $member_ids);
+      $conds[] = "user_id IN ($member_ids)";
     }
 
-    return $row["id"];
+    $random_positive_vote = $this->options['random_positive_vote'];
+    if ($random_positive_vote) {
+      $havings[] = "votes >= 0";
+    }
+
+    if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
+    if ($havings) { $havings = "HAVING " . implode(" AND ", $havings); } else $havings="";
+
+    $query = "
+      SELECT id, IFNULL(vote,0) AS votes
+      FROM weekendv2_list
+      LEFT JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
+
+      WHERE weekendv2_list.room_id=$room_id
+      AND id<{$this->get_currently_playing_id()}
+      AND skip_reason = 'played'
+      $conds
+      GROUP BY song_id
+      $havings
+      ORDER BY RAND()
+      LIMIT 1
+    ";
+
+    Log::debug($query);
+
+    $result = $this->db->query($query);
+    if (!$result) {
+      return false;
+    }
+    if (!$row = $this->db->fetch($result)) {
+      return false;
+    }
+    return $row['id'];
   }
 
   public function set_next_song($Playlist) {
