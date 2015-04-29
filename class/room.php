@@ -314,6 +314,8 @@ class Room {
       LIMIT 1
     ";
 
+    Log::debug($query);
+
     $result = $this->db->query($query);
     if (!$result) {
       return false;
