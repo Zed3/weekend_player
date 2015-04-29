@@ -6,6 +6,7 @@ require_once("class/rooms.php");
 require_once("class/chat.php");
 require_once("class/playlist.php");
 require_once("class/log.php");
+require_once("class/youtube.php");
 require_once('class/db.class.php');
 $conn = dbclass::getInstance($conf_db_host, $conf_db_user, $conf_db_pass, $conf_db_name);
 $db = new mydb($conf_db_host, $conf_db_user, $conf_db_pass, $conf_db_name) or die("cant connect to db.");
@@ -13,6 +14,8 @@ $Users = new Users($db);
 $Rooms = new Rooms($db);
 $Chat = new Chat($conn);
 $Playlist = new Playlist($db);
-
+$youtube_api = new Youtube(array('key' => 'AIzaSyBQ9-fSMFdnJXkxYAiew8OxmyNh7mi2l9s'));
+$video = $youtube_api->getVideoInfo('rie-hPVJ7Sw');
+var_dump($video);
 session_start();
 ?>
