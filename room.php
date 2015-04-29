@@ -127,7 +127,7 @@
         <div class="panel-heading">Playlist</div>
         <div class="panel-body" id="playlist-container">
 
-          <table class="table table-hover" id="history-table">
+          <table class="table table-hover table-striped" id="history-table">
             <tbody id="history-table-data">
             </tbody>
           </table>

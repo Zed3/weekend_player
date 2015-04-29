@@ -23,7 +23,6 @@ var Message = {
           alert_class = 'alert-success';
       }
 
-
       jQuery(function () {
         jQuery.notifyBar({
           html: msg,
