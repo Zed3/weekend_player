@@ -119,44 +119,32 @@ public function get_youtube($url){
 }
 
 
-  public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
+public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
 
     $safe_v = $this->db->safe($v);
     if  (strlen($safe_v) != 11) {
       return false;
     }
-    // $response = file_get_contents('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
-    // $response = system("curl -H 'Host: gdata.youtube.com' http://74.125.195.118/feeds/api/videos/".$safe_v);
+
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
       $this->add_item($room_id, $safe_v, '', '', $user_email);
     }
 
-// $ch = curl_init('http://gdata.youtube.com/feeds/api/videos/'.$safe_v);
-// curl_setopt($ch,CURLOPT_RETURNTRANSFER,1);
-// $response = curl_exec($ch);
-    $response = $this->get_youtube_data($safe_v);
+    global $youtube_api;
+    $video = $youtube_api->getVideoInfo($safe_v);
 
-    if ($response["data"]) {
+    if ($video) {
+      $title = $video->snippet->title;
 
-      //catch API erros
-      // preg_match("/(<error>)(.*)(<\\\/error>)/",$response, $matches);
-      // if ($matches) {
-      //   throw new Exception($response);
-      // }
+      $youtube_time = $video->contentDetails->duration;
+      $start = new DateTime('@0'); // Unix epoch
+      $start->add(new DateInterval($youtube_time));
 
-      $title = $response["data"]["title"];
-      $length = $response["data"]["duration"];
+      $reference = new DateTimeImmutable;
+      $endTime = $reference->add(new DateInterval($youtube_time));
 
-      // //preg_match("/(<media:title.*>)(\b.*\b)(<\/media:title>)/",$response, $matches);
-      // preg_match("/(<media:title.*>)(.*)(<\/media:title>)/",$response, $matches);
-
-      // if (!$matches) {
-      //   preg_match("/(<media:title.*>)(.*)(<\\\/media:title>)/",$response, $matches);
-      // }
-
-      // $title = $matches[2];
-      // $title = str_replace("'","",$title);
+      $length = $endTime->getTimestamp() - $reference->getTimestamp();
 
       if (!$title) {
         throw new Exception("Could not read title for v=" . $safe_v );

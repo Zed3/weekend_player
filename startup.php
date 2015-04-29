@@ -15,7 +15,5 @@ $Rooms = new Rooms($db);
 $Chat = new Chat($conn);
 $Playlist = new Playlist($db);
 $youtube_api = new Youtube(array('key' => 'AIzaSyBQ9-fSMFdnJXkxYAiew8OxmyNh7mi2l9s'));
-$video = $youtube_api->getVideoInfo('rie-hPVJ7Sw');
-var_dump($video);
 session_start();
 ?>
