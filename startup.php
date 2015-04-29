@@ -14,6 +14,6 @@ $Users = new Users($db);
 $Rooms = new Rooms($db);
 $Chat = new Chat($conn);
 $Playlist = new Playlist($db);
-$youtube_api = new Youtube(array('key' => 'AIzaSyBQ9-fSMFdnJXkxYAiew8OxmyNh7mi2l9s'));
+$youtube_api = new Youtube(array('key' => 'AIzaSyBaGflpQ_y6cG6VDM4WFGL6NbJSE7i-t9E'));
 session_start();
 ?>
