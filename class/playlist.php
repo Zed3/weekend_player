@@ -139,12 +139,13 @@ public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
 
       $youtube_time = $video->contentDetails->duration;
       $start = new DateTime('@0'); // Unix epoch
-      $start->add(new DateInterval($youtube_time));
 
-      $reference = new DateTimeImmutable;
+//      $reference = new DateTimeImmutable;
+      $reference = $start;
       $endTime = $reference->add(new DateInterval($youtube_time));
 
       $length = $endTime->getTimestamp() - $reference->getTimestamp();
+      $length = 0;
 
       if (!$title) {
         throw new Exception("Could not read title for v=" . $safe_v );
