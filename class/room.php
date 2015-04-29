@@ -292,7 +292,7 @@ class Room {
     }
 
     $random_positive_vote = $this->options['random_positive_vote'];
-    if ($random_online_members) {
+    if ($random_positive_vote) {
       $havings[] = "votes >= 0";
     }
 
