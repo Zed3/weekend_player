@@ -129,6 +129,7 @@ public function fetch_youtube_video_and_add($room_id, $v, $user_email) {
     $id = $this->find_in_list($safe_v); //TODO fix this into loop
     if ($id) {
       $this->add_item($room_id, $safe_v, '', '', $user_email);
+      return true;
     }
 
     global $youtube_api;
