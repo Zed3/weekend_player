@@ -300,7 +300,7 @@ class Room {
     if ($havings) { $havings = "HAVING " . implode(" AND ", $havings); } else $havings="";
 
     $query = "
-      SELECT id, vote AS votes
+      SELECT id, IFNULL(vote,0) AS votes
       FROM weekendv2_list
       LEFT JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
 
