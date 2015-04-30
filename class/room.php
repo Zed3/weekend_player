@@ -278,6 +278,7 @@ class Room {
     $havings = [];
     $random_online_members = $this->options['random_online_members'];
     $random_positive_vote = $this->options['random_positive_vote'];
+    $random_last_played = $this->options['random_last_played'];
 
     if ($random_online_members) {
       global $config_server_poll_max_executing_time;
@@ -291,18 +292,38 @@ class Room {
       $conds[] = "user_id IN ($member_ids)";
     }
 
-    $random_positive_vote = $this->options['random_positive_vote'];
-    if ($random_positive_vote) {
-      $havings[] = "votes >= 0";
+    if ($random_positive_vote) { $havings[] = "votes >= 0"; }
+    if ($random_last_played) {
+      $random_last_played = intval($random_last_played);
+      if ($random_last_played = 24) {
+        $random_last_played = round((time() - strtotime("today")) / 3600);
+      }
+      $havings[] = "last_played > $random_last_played";
     }
 
     if ($conds) { $conds = "AND " . implode(" AND ", $conds); } else $conds="";
     if ($havings) { $havings = "HAVING " . implode(" AND ", $havings); } else $havings="";
 
     $query = "
-      SELECT id, IFNULL(vote,0) AS votes
+      SELECT id,
+        IFNULL(vote,0) AS votes,
+        IFNULL(last_played,0) AS last_played
+
       FROM weekendv2_list
-      LEFT JOIN ( SELECT song_id, IFNULL(SUM(value),0) AS vote FROM weekendv2_votes GROUP BY song_id ) AS votes USING(song_id)
+      LEFT JOIN (
+        SELECT song_id, IFNULL(SUM(value),0) AS vote
+        FROM weekendv2_votes
+        GROUP BY song_id
+      ) AS votes USING(song_id)
+
+      LEFT JOIN (
+        SELECT song_id,TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
+        FROM weekendv2_list
+        WHERE skip_reason = 'played'
+        AND room_id=1
+        GROUP BY song_id
+        ORDER BY timestamp DESC
+      ) AS hour_diff USING(song_id)
 
       WHERE weekendv2_list.room_id=$room_id
       AND id<{$this->get_currently_playing_id()}

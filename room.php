@@ -107,6 +107,15 @@
         <label class="radio-inline"><input type="radio" name="random_positive_vote" id="random_positive_vote_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
       </td>
     </tr>
+    <tr>
+      <td>Choose song that was not played for duration</td>
+      <td>
+        <label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
+        <label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_5" value="5" onchange="Room.set_option(this.name, this.value)"> 5 Hours</label>
+        <label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_24" value="24" onchange="Room.set_option(this.name, this.value)"> Today (since 00:00)</label>
+        <label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
+      </td>
+    </tr>
   </tbody>
 </table>
 

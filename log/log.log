@@ -1,0 +1,90 @@
+2015-04-30T20:46:13+03:00 DEBUG 
+      SELECT id,
+        IFNULL(vote,0) AS votes,
+        IFNULL(last_played,0) AS last_played
+
+      FROM weekendv2_list
+      LEFT JOIN (
+        SELECT song_id, IFNULL(SUM(value),0) AS vote
+        FROM weekendv2_votes
+        GROUP BY song_id
+      ) AS votes USING(song_id)
+
+      LEFT JOIN (
+        SELECT song_id,TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
+        FROM weekendv2_list
+        WHERE skip_reason = 'played'
+        AND room_id=1
+        GROUP BY song_id
+        ORDER BY timestamp DESC
+      ) AS hour_diff USING(song_id)
+
+      WHERE weekendv2_list.room_id=1
+      AND id<106
+      AND skip_reason = 'played'
+      AND user_id IN (1)
+      GROUP BY song_id
+      HAVING votes >= 0 AND last_played < 5
+      ORDER BY RAND()
+      LIMIT 1
+    
+2015-04-30T20:46:50+03:00 DEBUG 
+      SELECT id,
+        IFNULL(vote,0) AS votes,
+        IFNULL(last_played,0) AS last_played
+
+      FROM weekendv2_list
+      LEFT JOIN (
+        SELECT song_id, IFNULL(SUM(value),0) AS vote
+        FROM weekendv2_votes
+        GROUP BY song_id
+      ) AS votes USING(song_id)
+
+      LEFT JOIN (
+        SELECT song_id,TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
+        FROM weekendv2_list
+        WHERE skip_reason = 'played'
+        AND room_id=1
+        GROUP BY song_id
+        ORDER BY timestamp DESC
+      ) AS hour_diff USING(song_id)
+
+      WHERE weekendv2_list.room_id=1
+      AND id<106
+      AND skip_reason = 'played'
+      AND user_id IN (1)
+      GROUP BY song_id
+      HAVING votes >= 0 AND last_played > 5
+      ORDER BY RAND()
+      LIMIT 1
+    
+2015-04-30T20:50:47+03:00 DEBUG 
+      SELECT id,
+        IFNULL(vote,0) AS votes,
+        IFNULL(last_played,0) AS last_played
+
+      FROM weekendv2_list
+      LEFT JOIN (
+        SELECT song_id, IFNULL(SUM(value),0) AS vote
+        FROM weekendv2_votes
+        GROUP BY song_id
+      ) AS votes USING(song_id)
+
+      LEFT JOIN (
+        SELECT song_id,TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
+        FROM weekendv2_list
+        WHERE skip_reason = 'played'
+        AND room_id=1
+        GROUP BY song_id
+        ORDER BY timestamp DESC
+      ) AS hour_diff USING(song_id)
+
+      WHERE weekendv2_list.room_id=1
+      AND id<106
+      AND skip_reason = 'played'
+      AND user_id IN (1)
+      GROUP BY song_id
+      HAVING votes >= 0 AND last_played > 21
+      ORDER BY RAND()
+      LIMIT 1
+    
