@@ -63,10 +63,10 @@
         foreach ($room_member_list as $member_info) {
           $user_id = $member_info['user_id'];
           @$db_value = $room_user_options[$user_id][$key];
-          var_dump($db_value);
+          $checked = $db_value == true ? " checked='checked'" : "";
           echo "<td>";
     //      echo '<label class="checkbox-inline"><input type="checkbox" name="$key" value="1" onchange="Room.set_user_option(' . $key . ', ' . $member_info['user_id'] . ', this.value)"> </label>';
-          echo "<label class='checkbox-inline'><input type='checkbox' name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
+          echo "<label class='checkbox-inline'><input type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
           echo "</td>";
           //<label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
         }
