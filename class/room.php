@@ -5,7 +5,11 @@ class Room {
   private $name;
   private $currently_playing_id;
   private $update_version;
-
+  public $user_permission_array = array(
+    "can_add_song" => "User can add songs",
+    "can_change_song" => "User can change songs",
+    "can_vote" => "User can vote"
+    );
   function __construct($db, $id) {
     $this->db = $db;
     $result = $this->db->query("select * from weekendv2_rooms where id='$id'");

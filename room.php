@@ -38,6 +38,41 @@
   <div class="row">
     <div class="col-xs-12 col-md-8">
 
+      <div class="panel panel-primary">
+        <div class="panel-heading">User Permissions</div>
+
+<?php
+  $room_member_list = $room->get_members(9999999);
+?>
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th></th>
+      <?php
+        foreach ($room_member_list as $member_info) {
+          echo "<th>" . $member_info['member_name'] . "</th>";
+        }
+      ?>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+      foreach ($room->user_permission_array as $key => $title) {
+        echo "<tr><td>$title</td>";
+        foreach ($room_member_list as $member_info) {
+          echo "<td>" . $member_info['member_name'] . "</td>";
+        }
+        echo "</tr>";
+      }
+    ?>
+  </tbody>
+</table>
+        <div class="panel-body">
+
+        </div><!-- end of panel-body -->
+      </div><!-- end of panel -->
+
+
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -121,6 +156,7 @@
 
       </div>
       </div>
+
       <div class="panel panel-primary">
         <div class="panel-heading">Player size (1-3):</div>
         <div class="panel-body">
