@@ -75,6 +75,24 @@ var Room = {
             dataType: "json",
             timeout: 60000
         });
+    },
+    set_user_option: function (key, user_id, value) {
+        // $("#shared_radio .panel-heading").append('<span id="load">__</span>');
+        // $('#load').fadeIn('normal');
+        $.ajax({
+            url: "server.php?" + generate_ajax_key(),
+            type: "POST",
+            data: {
+                "id": room_id,
+                "task": "client",
+                "kind": "update_user_option",
+                "key": key,
+                "user_id": user_id,
+                "value": value
+            },
+            dataType: "json",
+            timeout: 60000
+        });
     }
 };
 

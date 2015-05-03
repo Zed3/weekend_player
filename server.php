@@ -68,6 +68,16 @@ if ($task == "client") {
     $room->generate_update_version();
   }
 
+  if ($kind == "update_user_option") {
+    $room = $Rooms->get_room($room_id);
+    $key = $Rooms->clean_variable($_POST["key"]);
+    $value = $Rooms->clean_variable($_POST["value"]);
+    $user_id = $Rooms->clean_variable($_POST["user_id"]);
+    $room->update_user_option($key, $user_id, $value);
+    $result = true;
+    $room->generate_update_version();
+  }
+
   if ($kind == "vote") {
     $room = $Rooms->get_room($room_id);
     $video_id = $Rooms->clean_variable($_POST["video_id"]);

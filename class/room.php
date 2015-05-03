@@ -33,6 +33,14 @@ class Room {
     $this->update_options();
   }
 
+  public function update_user_option($key, $user_id, $val) {
+    $user_options = $this->options['user_options'];
+    $user_options[$user_id][$key] = $val;
+    $options['user_options'] = $user_options;
+    $this->options = $options;
+    $this->update_options();
+  }
+
   private function update_options() {
     $options = json_encode($this->options);
     $query = "UPDATE weekendv2_rooms SET room_options='$options' WHERE id={$this->id} LIMIT 1";
@@ -49,6 +57,10 @@ class Room {
 
   public function get_options() {
     return $this->options;
+  }
+
+  public function get_user_options() {
+    return $this->options['user_options'];
   }
 
   public function get_owner_name() {

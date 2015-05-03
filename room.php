@@ -43,6 +43,7 @@
 
 <?php
   $room_member_list = $room->get_members(9999999);
+  $room_user_options = $room->get_user_options();
 ?>
 <table class="table table-hover table-striped">
   <thead>
@@ -60,7 +61,14 @@
       foreach ($room->user_permission_array as $key => $title) {
         echo "<tr><td>$title</td>";
         foreach ($room_member_list as $member_info) {
-          echo "<td>" . $member_info['member_name'] . "</td>";
+          $user_id = $member_info['user_id'];
+          @$db_value = $room_user_options[$user_id][$key];
+          var_dump($db_value);
+          echo "<td>";
+    //      echo '<label class="checkbox-inline"><input type="checkbox" name="$key" value="1" onchange="Room.set_user_option(' . $key . ', ' . $member_info['user_id'] . ', this.value)"> </label>';
+          echo "<label class='checkbox-inline'><input type='checkbox' name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
+          echo "</td>";
+          //<label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
         }
         echo "</tr>";
       }
