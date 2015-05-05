@@ -222,6 +222,10 @@
 
     </div><!-- end of sidebar div -->
   </div><!-- end of row -->
+
+
+  <span class="developer"><span class="flag-israel"></span>MADE IN ISRAEL, FUELED BY COFFEE &amp; GOOD MUSIC</span>
+
 </div><!-- end of container -->
 
 
