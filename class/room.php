@@ -7,9 +7,9 @@ class Room {
   private $update_version;
   public $user_permission_array = array(
     "can_add_song" => "User can add songs",
-    "can_change_song" => "User can change songs",
-    "can_vote" => "User can vote"
+    "can_change_song" => "User can change songs"
     );
+
   function __construct($db, $id) {
     $this->db = $db;
     $result = $this->db->query("select * from weekendv2_rooms where id='$id'");
@@ -25,6 +25,7 @@ class Room {
       $this->options = json_decode($row["room_options"], true);
     }
   }
+
   public function is_user_allowed_to($user_id, $action) {
     $user_options = $this->get_user_options();
     @$user_options = $user_options[$user_id];

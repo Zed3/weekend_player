@@ -38,49 +38,6 @@
   <div class="row">
     <div class="col-xs-12 col-md-8">
 
-      <div class="panel panel-primary">
-        <div class="panel-heading">User Permissions</div>
-
-<?php
-  $room_member_list = $room->get_members(9999999);
-  $room_user_options = $room->get_user_options();
-?>
-<table class="table table-hover table-striped">
-  <thead>
-    <tr>
-      <th></th>
-      <?php
-        foreach ($room_member_list as $member_info) {
-          echo "<th>" . $member_info['member_name'] . "</th>";
-        }
-      ?>
-    </tr>
-  </thead>
-  <tbody>
-    <?php
-      foreach ($room->user_permission_array as $key => $title) {
-        echo "<tr><td>$title</td>";
-        foreach ($room_member_list as $member_info) {
-          $user_id = $member_info['user_id'];
-          @$db_value = $room_user_options[$user_id][$key];
-          $checked = $db_value == true ? " checked='checked'" : "";
-          echo "<td>";
-    //      echo '<label class="checkbox-inline"><input type="checkbox" name="$key" value="1" onchange="Room.set_user_option(' . $key . ', ' . $member_info['user_id'] . ', this.value)"> </label>';
-          echo "<label class='checkbox-inline'><input type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
-          echo "</td>";
-          //<label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
-        }
-        echo "</tr>";
-      }
-    ?>
-  </tbody>
-</table>
-        <div class="panel-body">
-
-        </div><!-- end of panel-body -->
-      </div><!-- end of panel -->
-
-
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -164,6 +121,49 @@
 
       </div>
       </div>
+
+      <div class="panel panel-primary">
+        <div class="panel-heading">User Permissions</div>
+          <?php
+            $room_member_list = $room->get_members(9999999);
+            $room_user_options = $room->get_user_options();
+          ?>
+          <table class="table table-hover table-striped">
+            <thead>
+              <tr>
+                <th></th>
+                <?php
+                  foreach ($room_member_list as $member_info) {
+                    echo "<th>" . $member_info['member_name'] . "</th>";
+                  }
+                ?>
+              </tr>
+            </thead>
+            <tbody>
+              <?php
+                foreach ($room->user_permission_array as $key => $title) {
+                  echo "<tr><td>$title</td>";
+                  foreach ($room_member_list as $member_info) {
+                    $user_id = $member_info['user_id'];
+                    @$db_value = $room_user_options[$user_id][$key];
+                    $checked = $db_value == true ? " checked='checked'" : "";
+                    echo "<td>";
+              //      echo '<label class="checkbox-inline"><input type="checkbox" name="$key" value="1" onchange="Room.set_user_option(' . $key . ', ' . $member_info['user_id'] . ', this.value)"> </label>';
+                    echo "<label class='checkbox-inline'><input type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
+                    echo "</td>";
+                    //<label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
+                  }
+                  echo "</tr>";
+                }
+              ?>
+            </tbody>
+          </table>
+        <div class="panel-body">
+
+        </div><!-- end of panel-body -->
+      </div><!-- end of panel -->
+
+
 
       <div class="panel panel-primary">
         <div class="panel-heading">Player size (1-3):</div>
