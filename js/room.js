@@ -440,10 +440,12 @@ function create_table_data(table, list) {
 
     var youtube_url = "https://www.youtube.com/watch?v=" + v;
     var buttons = "";
-    var requeue = " <a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"" + youtube_url + "\")'></span></a>" ;
+
+    var requeue = DT_currently_playing_id > parseInt(id) ? " <a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"" + youtube_url + "\")'></span></a>" : "";
+    var remove = DT_currently_playing_id < parseInt(id) ? " <a href='#'><span class='glyphicon glyphicon-stop btn-xs' aria-hidden='true' onclick='user_action([\"remove_song\", " + id + "])' ></span></a>" : "";
 
     table_row += "<tr" + tr_class + ">" +
-        "<td>" + title + requeue + "</td><td>" + total_played + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
+        "<td>" + title + requeue + remove + "</td><td>" + total_played + "</td><td>" + length_to_time(length) + "</td><td>" + user_name + "</td>" +
         "<td>" +
           "<a href='#'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true' onclick='vote_video(" + song_id + ", 1)'></span></a>" +
           " <span class='badge'>" + votes + "</span> " +

@@ -20,16 +20,36 @@ if (!$Rooms->room_exists_by_id($room_id)) {
 
   try {
     if ($task == "user_action") {
+      $action_to_perm = array(
+        "remove_song" => "can_change_song"
+        );
       $user_id = $Users->get_auth_id();
       $params = $_POST["params"];
+
       $action =  $Rooms->clean_variable($params[0]);
+      //handle sublevel permissions
+      @$perm = $action_to_perm[$action] ? : $action;
+
       $room = $Rooms->get_room($room_id);
-      $is_allowed = $room->is_user_allowed_to($user_id, $action);
+      $is_allowed = $room->is_user_allowed_to($user_id, $perm) ? true : false;
       if ($is_allowed) {
         switch ($action) {
           case 'can_change_song':
             $Playlist->set_item_report($room->get_currently_playing_id(), "played");
             $room->set_next_song($Playlist);
+            $room->generate_update_version();
+          break;
+
+          case 'remove_song':
+            $song_id =  intval($params[1]);
+            if (!$song_id) throw new Exception("No song id");
+
+            $Playlist->remove_item($song_id);
+            $room->generate_update_version();
+          break;
+
+          default:
+            throw new Exception("No action handler for $action");
           break;
         }
       }
