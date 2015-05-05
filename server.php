@@ -18,6 +18,32 @@ if (!$Rooms->room_exists_by_id($room_id)) {
    die();
 }
 
+  try {
+    if ($task == "user_action") {
+      $user_id = $Users->get_auth_id();
+      $params = $_POST["params"];
+      $action =  $Rooms->clean_variable($params[0]);
+      $room = $Rooms->get_room($room_id);
+      $is_allowed = $room->is_user_allowed_to($user_id, $action);
+      if ($is_allowed) {
+        switch ($action) {
+          case 'can_change_song':
+            $Playlist->set_item_report($room->get_currently_playing_id(), "played");
+            $room->set_next_song($Playlist);
+          break;
+        }
+      }
+
+      send_data((object)[
+        "result" => $is_allowed
+      ]);
+    }
+  } catch (Exception $e) {
+    send_data((object)[
+      "error" => $e->getMessage()
+    ]);
+  }
+
 if ($task == "report") {
   // for room admin only
   $room = $Rooms->get_room($room_id);
@@ -34,6 +60,7 @@ if ($task == "report") {
       $Playlist->set_item_report($room->get_currently_playing_id(), $Rooms->clean_variable($_POST["reason"]));
       $room->set_next_song($Playlist);
       break;
+
     case 'player_end':
       $Playlist->set_item_report($room->get_currently_playing_id(), "played");
       $room->set_next_song($Playlist);

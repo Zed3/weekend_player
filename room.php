@@ -215,6 +215,7 @@
 
       <div class="panel panel-primary">
         <div class="panel-heading">Now Playing</div>
+            <a href='#'><span class='glyphicon glyphicon-fast-forward' aria-hidden='true' onclick='user_action(["can_change_song"])'></span></a>
           <div class="panel-body">
             <div id="player"></div>
           </div><!-- panel body -->

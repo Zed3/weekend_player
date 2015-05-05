@@ -545,10 +545,26 @@ String.prototype.toHHMMSS = function() {
     return time;
 }
 
+function user_action(params) {
+    $.ajax({
+        url: "server.php?" + generate_ajax_key(),
+        type: "POST",
+        data: {
+            "id": room_id,
+            "task": "user_action",
+            "params": params
+        },
+        success: function(res) {
+            // no return data
+        },
+        dataType: "json",
+        timeout: 60000
+    });
+}
 
 function admin_report(kind, reason) {
     if (!is_room_admin) {
-        return
+        return;
     }
     if (!reason) {
         reason = "";

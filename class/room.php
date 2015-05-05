@@ -25,6 +25,11 @@ class Room {
       $this->options = json_decode($row["room_options"], true);
     }
   }
+  public function is_user_allowed_to($user_id, $action) {
+    $user_options = $this->get_user_options();
+    @$user_options = $user_options[$user_id];
+    return @$user_options[$action] == true ? true : false;
+  }
 
   public function update_option($key, $val) {
     $options = $this->options;
