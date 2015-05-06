@@ -33,42 +33,42 @@ $(document).ready(function() {
 
         search_results = "";
 
-        $.ajax({
-            url: "server.php?" + generate_ajax_key(),
-            type: "POST",
-            data: {
-                "id": room_id,
-                "task": "client",
-                "kind": "song_search",
-                "keyword": keyword
-            },
-            dataType: "json",
-            success: function(response){
-                if(response){
-                    $.each(response, function(i,data){
-                        var video_id = data.v;
-                        var video_title = data.title;
+        // $.ajax({
+        //     url: "server.php?" + generate_ajax_key(),
+        //     type: "POST",
+        //     data: {
+        //         "id": room_id,
+        //         "task": "client",
+        //         "kind": "song_search",
+        //         "keyword": keyword
+        //     },
+        //     dataType: "json",
+        //     success: function(response){
+        //         if(response){
+        //             $.each(response, function(i,data){
+        //                 var video_id = data.v;
+        //                 var video_title = data.title;
 
-                        var title = video_title + ": " + length_to_time(data.duration);
-                        if (data.local) {
-                            title += " <span class='glyphicon glyphicon-ok'></span>";
-                        }
-                        var youtube_url = "https://www.youtube.com/watch?v=" + data.v;
-                        search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + title + "</a>";
-                        update_search_results();
-                    });
-                }
-            },
-            timeout: 60000
-        });
+        //                 var title = video_title + ": " + length_to_time(data.duration);
+        //                 if (data.local) {
+        //                     title += " <span class='glyphicon glyphicon-ok'></span>";
+        //                 }
+        //                 var youtube_url = "https://www.youtube.com/watch?v=" + data.v;
+        //                 search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + title + "</a>";
+        //                 update_search_results();
+        //             });
+        //         }
+        //     },
+        //     timeout: 60000
+        // });
 
         $.ajax({
             type: "GET",
             url: yt_url,
             dataType:"jsonp",
             success: function(response){
-                var results = "";
                 if(response.data.items){
+                    var results = "";
                     $.each(response.data.items, function(i,data){
                         if (data.id == 'UKY3scPIMd8') { return true; }
                         var video_id = data.id;
@@ -79,6 +79,7 @@ $(document).ready(function() {
                     });
 
                     var re = new RegExp(keyword, 'gi');
+                    console.log(results);
                     //search_results = search_results.replace(re, "<span class='text-info'>" + keyword + "</span>");
                     search_results += results;
                     update_search_results();
