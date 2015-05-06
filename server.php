@@ -106,6 +106,13 @@ if ($task == "chat") {
 
 if ($task == "client") {
   $result = false;
+
+  if ($kind == "song_search") {
+    $max_results = 10;
+    $keyword = $Rooms->clean_variable($_POST["keyword"]);
+    send_data($Playlist->find_in_list_by_keyword($keyword, $max_results));
+  }
+
   if ($kind == "update_option") {
     $room = $Rooms->get_room($room_id);
     $key = $Rooms->clean_variable($_POST["key"]);
