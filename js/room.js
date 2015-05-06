@@ -20,25 +20,35 @@ $(document).ready(function() {
     //Create dynamic youtube search
     $("#url_youtube").keyup(function(){
         var search_input = $(this).val();
-        var keyword = encodeURIComponent(search_input);
+        var keyword = search_input;
         var max_results = 5;
         // Youtube API
         var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
         if (keyword.length < 5){ return; }
 
         $.ajax({
-            type: "GET",
-            url: yt_url,
-            dataType:"jsonp",
+            url: "server.php?" + generate_ajax_key(),
+            type: "POST",
+            data: {
+                "id": room_id,
+                "task": "client",
+                "kind": "song_search",
+                "keyword": keyword
+            },
+            dataType: "json",
             success: function(response){
-                if(response.data.items){
+                if(response){
                     var results = "";
-                    $.each(response.data.items, function(i,data){
-                        var video_id = data.id;
+                    $.each(response, function(i,data){
+                        var video_id = data.v;
                         var video_title = data.title;
-                        var video_viewCount = data.viewCount;
-                        var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
+
+                        var title = video_title + ": " + length_to_time(data.duration);
+                        if (data.local) {
+                            title += " <span class='glyphicon glyphicon-ok'></span>";
+                        }
+                        var youtube_url = "https://www.youtube.com/watch?v=" + data.v;
+                        results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + title + "</a>";
                     });
 
                     var re = new RegExp(keyword, 'gi');
@@ -49,7 +59,8 @@ $(document).ready(function() {
                 } else {
                     $("#search_results").html("Nothing was found :(");
                 }
-            }
+            },
+            timeout: 60000
         });
     });
 

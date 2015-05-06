@@ -33,6 +33,54 @@ class Playlist {
     $this->db->query("UPDATE weekendv2_list SET skip_reason='deleted' WHERE id='{$song_id}' LIMIT 1");
   }
 
+  public function find_in_list_by_keyword($keyword, $max_results=10) {
+    $keyword = $this->db->safe($keyword);
+    $query = "
+      SELECT video_id AS v, title, length AS duration
+      FROM weekendv2_songs
+      WHERE title LIKE '%$keyword%'
+      ORDER BY id DESC
+      LIMIT $max_results
+    ";
+
+    $result = $this->db->query($query);
+    // // if (!$result) {
+    // //   return array();
+    // // }
+
+    $list = array();
+    while ($row = $this->db->fetch($result)) {
+      $row['local'] = true;
+      $list[] = $row;
+    }
+
+    //get from web
+    $url="http://gdata.youtube.com/feeds/api/videos?q=$keyword&format=5&max-results=$max_results&v=2&alt=jsonc";
+    $agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
+
+    $curl = curl_init();
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($curl, CURLOPT_VERBOSE, true);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($curl, CURLOPT_USERAGENT, $agent);
+    curl_setopt($curl, CURLOPT_URL, $url);
+    $return = curl_exec($curl);
+    $results = json_decode($return, true);
+    if ($results['data']) {
+      foreach($results['data']['items'] as $data) {
+        if ($data['id'] == 'UKY3scPIMd8') { continue; }
+        $list[] = array(
+          "v" => $data['id'],
+          "title" => $data['title'],
+          "duration" => $data['duration']
+          );
+      }
+    }
+    //return json_decode($return, true);
+
+    return $list;
+  }
+
   public function find_in_list($v) {
     $id = 0;
     $v = $this->db->safe($v);
