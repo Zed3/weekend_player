@@ -9,7 +9,7 @@ var DT_currently_playing_data = {};
 var tag = document.createElement('script');
 var admin_volume_monitor = null;
 var admin_volume_last_volume = 100;
-var search_results = "";
+var search_results = "", local_search_results = "";
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -17,7 +17,8 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 
 function update_search_results() {
-    $("#search_results").html("<div class='list-group'>" + search_results + "</div>");
+    console.log(search_results);
+    $("#search_results").html("<div class='list-group'>" + search_results + local_search_results + "</div>");
 }
 
 $(document).ready(function() {
@@ -31,36 +32,36 @@ $(document).ready(function() {
         var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
         if (keyword.length < 5){ return; }
 
-        search_results = "";
 
-        // $.ajax({
-        //     url: "server.php?" + generate_ajax_key(),
-        //     type: "POST",
-        //     data: {
-        //         "id": room_id,
-        //         "task": "client",
-        //         "kind": "song_search",
-        //         "keyword": keyword
-        //     },
-        //     dataType: "json",
-        //     success: function(response){
-        //         if(response){
-        //             $.each(response, function(i,data){
-        //                 var video_id = data.v;
-        //                 var video_title = data.title;
+        $.ajax({
+            url: "server.php?" + generate_ajax_key(),
+            type: "POST",
+            data: {
+                "id": room_id,
+                "task": "client",
+                "kind": "song_search",
+                "keyword": keyword
+            },
+            dataType: "json",
+            success: function(response){
+                if(response){
+                    local_search_results = "";
+                    $.each(response, function(i,data){
+                        var video_id = data.v;
+                        var video_title = data.title;
 
-        //                 var title = video_title + ": " + length_to_time(data.duration);
-        //                 if (data.local) {
-        //                     title += " <span class='glyphicon glyphicon-ok'></span>";
-        //                 }
-        //                 var youtube_url = "https://www.youtube.com/watch?v=" + data.v;
-        //                 search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + title + "</a>";
-        //                 update_search_results();
-        //             });
-        //         }
-        //     },
-        //     timeout: 60000
-        // });
+                        var title = video_title + ": " + length_to_time(data.duration);
+                        if (data.local) {
+                            title += " <span class='glyphicon glyphicon-ok'></span>";
+                        }
+                        var youtube_url = "https://www.youtube.com/watch?v=" + data.v;
+                        local_search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + title + "</a>";
+                        update_search_results();
+                    });
+                }
+            },
+            timeout: 60000
+        });
 
         $.ajax({
             type: "GET",
@@ -68,25 +69,23 @@ $(document).ready(function() {
             dataType:"jsonp",
             success: function(response){
                 if(response.data.items){
-                    var results = "";
+                    search_results = "";
                     $.each(response.data.items, function(i,data){
-                        if (data.id == 'UKY3scPIMd8') { return true; }
                         var video_id = data.id;
                         var video_title = data.title;
                         var video_viewCount = data.viewCount;
                         var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
+                        search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
                     });
 
                     var re = new RegExp(keyword, 'gi');
-                    console.log(results);
-                    //search_results = search_results.replace(re, "<span class='text-info'>" + keyword + "</span>");
-                    search_results += results;
+//                    results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
                     update_search_results();
+                } else {
+
                 }
             }
         });
-
     });
 
 ////////////////////
