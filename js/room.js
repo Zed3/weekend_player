@@ -17,7 +17,6 @@ firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 var player;
 
 function update_search_results() {
-    console.log(search_results);
     $("#search_results").html("<div class='list-group'>" + search_results + local_search_results + "</div>");
 }
 
