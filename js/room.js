@@ -49,7 +49,8 @@ $(document).ready(function() {
                         var video_id = data.v;
                         var video_title = data.title;
 
-                        var title = video_title + ": " + length_to_time(data.duration);
+                        //var title = video_title + ": " + length_to_time(data.duration);
+                        var title = video_title;
                         if (data.local) {
                             title += " <span class='glyphicon glyphicon-ok'></span>";
                         }
@@ -62,29 +63,29 @@ $(document).ready(function() {
             timeout: 60000
         });
 
-        $.ajax({
-            type: "GET",
-            url: yt_url,
-            dataType:"jsonp",
-            success: function(response){
-                if(response.data.items){
-                    search_results = "";
-                    $.each(response.data.items, function(i,data){
-                        var video_id = data.id;
-                        var video_title = data.title;
-                        var video_viewCount = data.viewCount;
-                        var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
-                        search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
-                    });
+//         $.ajax({
+//             type: "GET",
+//             url: yt_url,
+//             dataType:"jsonp",
+//             success: function(response){
+//                 if(response.data.items){
+//                     search_results = "";
+//                     $.each(response.data.items, function(i,data){
+//                         var video_id = data.id;
+//                         var video_title = data.title;
+//                         var video_viewCount = data.viewCount;
+//                         var youtube_url = "https://www.youtube.com/watch?v=" + data.id;
+//                         search_results += "<a href='#' class='list-group-item' onclick='add_youtube_video(\"" + youtube_url + "\")'>" + video_title + ": " + length_to_time(data.duration) + "</a>";
+//                     });
 
-                    var re = new RegExp(keyword, 'gi');
-//                    results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
-                    update_search_results();
-                } else {
+//                     var re = new RegExp(keyword, 'gi');
+// //                    results = results.replace(re, "<span class='text-info'>" + keyword + "</span>");
+//                     update_search_results();
+//                 } else {
 
-                }
-            }
-        });
+//                 }
+//             }
+//         });
     });
 
 ////////////////////

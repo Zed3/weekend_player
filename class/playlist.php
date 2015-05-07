@@ -55,28 +55,14 @@ class Playlist {
     }
 
     // //get from web
-    // $url="http://gdata.youtube.com/feeds/api/videos?q=$keyword&format=5&max-results=$max_results&v=2&alt=jsonc";
-    // $agent= 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 1.0.3705; .NET CLR 1.1.4322)';
-
-    // $curl = curl_init();
-    // curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-    // curl_setopt($curl, CURLOPT_VERBOSE, true);
-    // curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-    // curl_setopt($curl, CURLOPT_USERAGENT, $agent);
-    // curl_setopt($curl, CURLOPT_URL, $url);
-    // $return = curl_exec($curl);
-    // $results = json_decode($return, true);
-    // if ($results['data']) {
-    //   foreach($results['data']['items'] as $data) {
-    //     if ($data['id'] == 'UKY3scPIMd8') { continue; }
-    //     $list[] = array(
-    //       "v" => $data['id'],
-    //       "title" => $data['title'],
-    //       "duration" => $data['duration']
-    //       );
-    //   }
-    // }
-    //return json_decode($return, true);
+    global $youtube_api;
+    $results = $youtube_api->search($keyword);
+    foreach ($results as $item) {
+      $row['v'] = $item->id->videoId;
+      $row['title'] = $item->snippet->title;
+      $row['length'] = 0;
+      $list[] = $row;
+    }
 
     return $list;
   }
