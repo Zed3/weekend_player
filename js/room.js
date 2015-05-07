@@ -98,6 +98,7 @@ $(document).ready(function() {
 } );
 var Room = {
     members: [],
+    options: [],
     set_option: function (key, value) {
         $("#shared_radio .panel-heading").append('<span id="load">__</span>');
         $('#load').fadeIn('normal');
@@ -315,29 +316,48 @@ function parsePollingData(data) {
 }
 
 function update_options(options){
+    //check if update is needed
+    if (JSON.stringify(Room.options) == JSON.stringify(options) === false) {
+        Room.options = options;
+        if (options["player_status"]) {
+            console.log("changing player status to " + options["player_status"]);
+            toggle_player(options["player_status"]);
+        }
+    }
+
     for (var setting in options) {
         var element_id = setting + '_' + options[setting];
         //TODO: currently supports radios only
-        $("#" + element_id)[0].checked = "checked";
+        if ($("#" + element_id)[0]) {
+            $("#" + element_id)[0].checked = "checked";
+        }
     }
     $('#load').fadeOut('normal');
 }
 function toggle_player(action) {
     switch (action) {
         case "play":
-            player.playVideo();
+            if (is_room_admin) {
+                player.playVideo();
+            }
             $('#player-pause-play').html("<span class='glyphicon glyphicon-pause' aria-hidden='true' onclick='toggle_player(\"pause\")'></span>");
         break;
         case "pause":
-            player.pauseVideo();
+            if (is_room_admin) {
+                player.pauseVideo();
+            }
             $('#player-pause-play').html("<span class='glyphicon glyphicon-play' aria-hidden='true' onclick='toggle_player(\"play\")'></span>");
         break;
         case "mute":
-            player.mute();
+            if (is_room_admin) {
+                player.mute();
+            }
             $('#player-mute').html("<span class='glyphicon glyphicon-volume-off' aria-hidden='true' onclick='toggle_player(\"unmute\")'></span>");
         break;
         case "unmute":
-            player.unMute();
+            if (is_room_admin) {
+                player.unMute();
+            }
             $('#player-mute').html("<span class='glyphicon glyphicon-volume-up' aria-hidden='true' onclick='toggle_player(\"mute\")'></span>");
         break;
     }
