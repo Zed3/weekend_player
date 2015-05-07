@@ -224,7 +224,12 @@
       </div><!-- panel -->
 
       <div class="panel panel-primary">
-        <div class="panel-heading">Now Playing | <a href='#' class="white"><span class='glyphicon glyphicon-fast-forward' aria-hidden='true' onclick='user_action(["can_change_song"])'></span></a></div>
+        <div class="panel-heading">Now Playing
+        | <a href='#' class="white"><span class='glyphicon glyphicon-fast-forward' aria-hidden='true' onclick='user_action(["can_change_song"])'></span></a>
+        | <a href='#' class="white" id='player-pause-play'><span class='glyphicon glyphicon-pause' aria-hidden='true' onclick='toggle_player("pause")'></span></a>
+        | <a href='#' class="white" value='true'  id='player-mute'><span class='glyphicon glyphicon-volume-up' aria-hidden='true' onclick='toggle_player("mute")'></span></a>
+
+        </div>
           <div class="panel-body">
             <div id="player"></div>
           </div><!-- panel body -->

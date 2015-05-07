@@ -322,6 +322,26 @@ function update_options(options){
     }
     $('#load').fadeOut('normal');
 }
+function toggle_player(action) {
+    switch (action) {
+        case "play":
+            player.playVideo();
+            $('#player-pause-play').html("<span class='glyphicon glyphicon-pause' aria-hidden='true' onclick='toggle_player(\"pause\")'></span>");
+        break;
+        case "pause":
+            player.pauseVideo();
+            $('#player-pause-play').html("<span class='glyphicon glyphicon-play' aria-hidden='true' onclick='toggle_player(\"play\")'></span>");
+        break;
+        case "mute":
+            player.mute();
+            $('#player-mute').html("<span class='glyphicon glyphicon-volume-off' aria-hidden='true' onclick='toggle_player(\"unmute\")'></span>");
+        break;
+        case "unmute":
+            player.unMute();
+            $('#player-mute').html("<span class='glyphicon glyphicon-volume-up' aria-hidden='true' onclick='toggle_player(\"mute\")'></span>");
+        break;
+    }
+}
 
 function update_stats(data) {
     var content = "";
