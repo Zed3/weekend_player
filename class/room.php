@@ -24,6 +24,7 @@ class Room {
       $this->currently_playing_id = $row["currently_playing_id"];
       $this->update_version = $row["update_version"];
       $this->options = json_decode($row["room_options"], true);
+      $this->user_options = json_decode($row["user_options"], true);
     }
   }
 
@@ -41,16 +42,20 @@ class Room {
   }
 
   public function update_user_option($key, $user_id, $val) {
-    $user_options = $this->options['user_options'];
+    $user_options = $this->user_options;
     $user_options[$user_id][$key] = $val;
-    $options['user_options'] = $user_options;
-    $this->options = $options;
-    $this->update_options();
+    $this->update_user_options();
   }
 
   private function update_options() {
     $options = json_encode($this->options);
     $query = "UPDATE weekendv2_rooms SET room_options='$options' WHERE id={$this->id} LIMIT 1";
+    $this->db->query($query);
+  }
+
+  private function update_user_options() {
+    $options = json_encode($this->user_options);
+    $query = "UPDATE weekendv2_rooms SET user_options='$options' WHERE id={$this->id} LIMIT 1";
     $this->db->query($query);
   }
 
@@ -67,7 +72,7 @@ class Room {
   }
 
   public function get_user_options() {
-    return $this->options['user_options'];
+    return $this->user_options;
   }
 
   public function get_owner_name() {
