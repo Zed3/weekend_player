@@ -13,7 +13,9 @@
   }
 
   $room = $Rooms->get_room($room_id);
-
+  $user_permissions = $room->get_user_options();
+  $user_id = $Users->get_auth_id();
+  $user_permission = $user_permissions[$user_id];
   require("header.php");
 ?>
 <script src="/js/room.js"></script>
@@ -24,6 +26,7 @@
   /* don't worry it wont help you hack the room, just to save IO */
   is_room_admin = <?=($Users->get_auth_email() == $room->get_owner_email() ? "true" : "false")?>;
   room_id = "<?=$room_id?>";
+  user_permission = JSON.parse('<?php echo json_encode($user_permission);?>');
 </script>
 <div class="container-fluid">
 
@@ -124,9 +127,12 @@
 
       <div class="panel panel-primary">
         <div class="panel-heading">User Permissions</div>
+        <div class="panel-body">
           <?php
             $room_member_list = $room->get_members(9999999);
             $room_user_options = $room->get_user_options();
+
+            if ($room->is_user_allowed_to($user_id, 'can_change_permissions')) {
           ?>
           <table class="table table-hover table-striped">
             <thead>
@@ -158,7 +164,11 @@
               ?>
             </tbody>
           </table>
-        <div class="panel-body">
+          <?php
+            } else {
+              echo "<p>You have no permission to this section</p>";
+            }
+          ?>
 
         </div><!-- end of panel-body -->
       </div><!-- end of panel -->
@@ -214,8 +224,7 @@
       </div><!-- panel -->
 
       <div class="panel panel-primary">
-        <div class="panel-heading">Now Playing</div>
-            <a href='#'><span class='glyphicon glyphicon-fast-forward' aria-hidden='true' onclick='user_action(["can_change_song"])'></span></a>
+        <div class="panel-heading">Now Playing | <a href='#' class="white"><span class='glyphicon glyphicon-fast-forward' aria-hidden='true' onclick='user_action(["can_change_song"])'></span></a></div>
           <div class="panel-body">
             <div id="player"></div>
           </div><!-- panel body -->

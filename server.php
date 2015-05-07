@@ -20,17 +20,16 @@ if (!$Rooms->room_exists_by_id($room_id)) {
 
   try {
     if ($task == "user_action") {
+      $user_id = $Users->get_auth_id();
+      $room = $Rooms->get_room($room_id);
       $action_to_perm = array(
         "remove_song" => "can_change_song"
         );
-      $user_id = $Users->get_auth_id();
       $params = $_POST["params"];
 
       $action =  $Rooms->clean_variable($params[0]);
       //handle sublevel permissions
       @$perm = $action_to_perm[$action] ? : $action;
-
-      $room = $Rooms->get_room($room_id);
       $is_allowed = $room->is_user_allowed_to($user_id, $perm) ? true : false;
       if ($is_allowed) {
         switch ($action) {
@@ -106,7 +105,7 @@ if ($task == "chat") {
 
 if ($task == "client") {
   $result = false;
-
+try {
   if ($kind == "song_search") {
     $max_results = 10;
     $keyword = $Rooms->clean_variable($_POST["keyword"]);
@@ -127,6 +126,9 @@ if ($task == "client") {
     $key = $Rooms->clean_variable($_POST["key"]);
     $value = $Rooms->clean_variable($_POST["value"]);
     $user_id = $Rooms->clean_variable($_POST["user_id"]);
+    //Log::debug("you are here");
+    if (!$room->is_user_allowed_to($user_id, 'can_change_permissions')) { throw new Exception("You are not allowed to do this"); }
+
     $room->update_user_option($key, $user_id, $value);
     $result = true;
     $room->generate_update_version();
@@ -149,7 +151,7 @@ if ($task == "client") {
     $room->generate_update_version();
   }
 
-  try {
+
     if ($kind == "add") {
       $room = $Rooms->get_room($room_id);
       $video_id = $Rooms->clean_variable($_POST["video_id"]);

@@ -13,7 +13,6 @@ var search_results = "", local_search_results = "";
 tag.src = "https://www.youtube.com/iframe_api";
 var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 var player;
 
 function update_search_results() {
@@ -29,6 +28,11 @@ $(document).ready(function() {
 
         // Youtube API
         var yt_url='http://gdata.youtube.com/feeds/api/videos?q=' + keyword + '&format=5&max-results=' + max_results + '&v=2&alt=jsonc';
+        if (keyword.length == 0){
+            search_results = "";
+            local_search_results = "";
+            update_search_results();
+        }
         if (keyword.length < 5){ return; }
 
 

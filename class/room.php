@@ -7,7 +7,8 @@ class Room {
   private $update_version;
   public $user_permission_array = array(
     "can_add_song" => "User can add songs",
-    "can_change_song" => "User can change songs"
+    "can_change_song" => "User can change songs",
+    "can_change_permissions" => "User can change User Permissions"
     );
 
   function __construct($db, $id) {
