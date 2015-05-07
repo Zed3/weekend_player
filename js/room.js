@@ -49,7 +49,8 @@ $(document).ready(function() {
                         var video_id = data.v;
                         var video_title = data.title;
 
-                        var title = video_title + ": " + length_to_time(data.duration);
+                        //var title = video_title + ": " + length_to_time(data.duration);
+                        var title = video_title;
                         if (data.local) {
                             title += " <span class='glyphicon glyphicon-ok'></span>";
                         }
