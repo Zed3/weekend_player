@@ -30,7 +30,8 @@ if (!$Rooms->room_exists_by_id($room_id)) {
       $action =  $Rooms->clean_variable($params[0]);
       //handle sublevel permissions
       @$perm = $action_to_perm[$action] ? : $action;
-      $is_allowed = $room->is_user_allowed_to($user_id, $perm) ? true : false;
+      $is_admin = $room->get_owner_email() != $Users->get_auth_email();
+      $is_allowed = ($room->is_user_allowed_to($user_id, $perm)) ? true : false;
       if ($is_allowed) {
         switch ($action) {
           case 'can_change_song':
@@ -127,7 +128,11 @@ try {
     $value = $Rooms->clean_variable($_POST["value"]);
     $user_id = $Rooms->clean_variable($_POST["user_id"]);
     //Log::debug("you are here");
-    if (!$room->is_user_allowed_to($user_id, 'can_change_permissions')) { throw new Exception("You are not allowed to do this"); }
+
+    $is_admin = $room->get_owner_email() != $Users->get_auth_email();
+    $is_allowed = ($room->is_user_allowed_to($Users->get_auth_id(), 'can_change_permissions')) ? true : false;
+
+    if (!$is_allowed) { throw new Exception("You are not allowed to do this $user_id $is_admin"); }
 
     $room->update_user_option($key, $user_id, $value);
     $result = true;

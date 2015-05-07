@@ -42,8 +42,10 @@ class Room {
   }
 
   public function update_user_option($key, $user_id, $val) {
+    Log::debug("Setting $key = $val for user $user_id");
     $user_options = $this->user_options;
     $user_options[$user_id][$key] = $val;
+    $this->user_options = $user_options;
     $this->update_user_options();
   }
 

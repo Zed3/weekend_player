@@ -1,0 +1,11 @@
+2015-05-07T12:27:13+03:00 DEBUG Setting can_add_song = 1 for user 2633
+2015-05-07T13:09:19+03:00 DEBUG Setting can_add_song = 1 for user 1
+2015-05-07T13:09:19+03:00 DEBUG {"1":{"can_change_permissions":"1"}}
+2015-05-07T13:09:54+03:00 DEBUG Setting can_change_song = 1 for user 2633
+2015-05-07T13:09:54+03:00 DEBUG {"1":{"can_change_permissions":"1"}}
+2015-05-07T13:09:54+03:00 DEBUG {"1":{"can_change_permissions":"1"},"2633":{"can_change_song":"1"}}
+2015-05-07T13:12:26+03:00 DEBUG Setting can_add_song = 1 for user 2651
+2015-05-07T13:12:26+03:00 DEBUG {"1":{"can_change_permissions":"1"}}
+2015-05-07T13:12:26+03:00 DEBUG {"1":{"can_change_permissions":"1"},"2651":{"can_add_song":"1"}}
+2015-05-07T13:12:26+03:00 DEBUG UPDATE weekendv2_rooms SET user_options='{"1":{"can_change_permissions":"1"}}' WHERE id=1 LIMIT 1
+2015-05-07T13:13:25+03:00 DEBUG Setting can_change_song = 1 for user 1
