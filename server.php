@@ -26,8 +26,8 @@ if ($task == "report") {
   }
   switch ($kind) {
     case 'get_random_song':
-      $results = $Playlist->find_in_list_by_keyword('Green Day');
-      send_data((object)["test" => $results]);
+      $song = $room->get_random_song();
+      send_data((object)["test" => $song]);
       break;
 
     case 'player_error':
