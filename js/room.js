@@ -340,25 +340,25 @@ function toggle_player(action) {
             if (is_room_admin) {
                 player.playVideo();
             }
-            $('#player-pause-play').html("<span class='glyphicon glyphicon-pause' aria-hidden='true' onclick='toggle_player(\"pause\")'></span>");
+            $('#player-pause-play').html("<span class='glyphicon glyphicon-pause' aria-hidden='true' onclick='Room.set_option(\"player_status\", \"pause\")'></span>");
         break;
         case "pause":
             if (is_room_admin) {
                 player.pauseVideo();
             }
-            $('#player-pause-play').html("<span class='glyphicon glyphicon-play' aria-hidden='true' onclick='toggle_player(\"play\")'></span>");
+            $('#player-pause-play').html("<span class='glyphicon glyphicon-play' aria-hidden='true' onclick='Room.set_option(\"player_status\", \"play\")'></span>");
         break;
         case "mute":
             if (is_room_admin) {
                 player.mute();
             }
-            $('#player-mute').html("<span class='glyphicon glyphicon-volume-off' aria-hidden='true' onclick='toggle_player(\"unmute\")'></span>");
+            $('#player-mute').html("<span class='glyphicon glyphicon-volume-off' aria-hidden='true' onclick='Room.set_option(\"player_status\", \"unmute\")'></span>");
         break;
         case "unmute":
             if (is_room_admin) {
                 player.unMute();
             }
-            $('#player-mute').html("<span class='glyphicon glyphicon-volume-up' aria-hidden='true' onclick='toggle_player(\"mute\")'></span>");
+            $('#player-mute').html("<span class='glyphicon glyphicon-volume-up' aria-hidden='true' onclick='Room.set_option(\"player_status\", \"mute\")'></span>");
         break;
     }
 }
