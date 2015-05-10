@@ -347,11 +347,10 @@ class Room {
       ) AS votes USING(song_id)
 
       LEFT JOIN (
-        SELECT song_id,TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
+        SELECT DISTINCT(song_id), TIMESTAMPDIFF(HOUR, timestamp, NOW()) AS last_played
         FROM weekendv2_list
         WHERE skip_reason = 'played'
         AND room_id = $room_id
-        GROUP BY song_id
         ORDER BY timestamp DESC
       ) AS hour_diff USING(song_id)
 
