@@ -1,6 +1,7 @@
 <?php
 class Room {
   private $id;
+  private $admin;
   private $owner_email;
   private $name;
   private $currently_playing_id;
@@ -25,6 +26,7 @@ class Room {
       $this->update_version = $row["update_version"];
       $this->options = json_decode($row["room_options"], true);
       $this->user_options = json_decode($row["user_options"], true);
+      $this->admin = $this->options['room_admin'];
     }
   }
 
@@ -107,6 +109,10 @@ class Room {
     }
     $row = $this->db->fetch($result);
     return $row["admin_volume"];
+  }
+
+  public function set_admin($user_id) {
+    $this->update_option('room_admin', $user_id);
   }
 
   public function set_admin_volume($volume) {
@@ -252,7 +258,8 @@ class Room {
     $time_margin = 10;
     $total_margin = 0 - $max_executing_time - $time_margin;
     // get current members:
-    $result = $this->db->query("select weekendv2_room_members.id as user_id, weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
+    //SELECT * FROM weekendv2_room_members LEFT JOIN weekendv2_users ON (member_email = email) WHERE room_id = 2
+    $result = $this->db->query("select weekendv2_users.id as user_id, weekendv2_room_members.member_email as member_email, TIMESTAMPDIFF(SECOND, weekendv2_room_members.last_update, NOW()) as last_update, weekendv2_users.name as member_name from weekendv2_room_members left join weekendv2_users on (weekendv2_users.email=weekendv2_room_members.member_email) where weekendv2_room_members.room_id='{$this->get_id()}' and weekendv2_room_members.last_update >= TIMESTAMPADD(SECOND,{$total_margin},NOW())");
     if (!$result) {
       return array();
     }

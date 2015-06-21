@@ -273,6 +273,10 @@ function get_admin_radio($room) {
 $room = $Rooms->get_room($room_id);
 update_member_flag($room); // add user to the room members list
 
+//update admin flag
+// check for admin presence
+//$room->set_admin($Users->get_auth_id());
+
 while (!is_timeout($start_time, $config_server_poll_max_executing_time)) {
   if (new_playlist_data($room_id, $update_version)) {
     $data = fetch_data($room);

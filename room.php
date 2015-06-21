@@ -40,7 +40,28 @@
 
   <div class="row">
     <div class="col-xs-12 col-md-8">
+<?php 
+  //TODO: debug remove
+  $room_member_list = $room->get_members(666);
 
+  //update admin flag
+  // check for admin presence
+  $is_admin_on = false;
+  $room_admin = $room->options['room_admin'];
+
+  //check that admin is actually on
+  foreach ($room_member_list as $member) {
+    if (intval($member['user_id']) == $room_admin){ 
+      $is_admin_on = true;
+    }
+  }
+
+  if (!$is_admin_on) {
+    echo "<div class='red'>No admin present, you are in charge now!</div>";
+    $room->set_admin($Users->get_auth_id());
+  }
+
+?>
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -132,38 +153,40 @@
             $room_member_list = $room->get_members(9999999);
             $room_user_options = $room->get_user_options();
 
-            if ($room->is_user_allowed_to($user_id, 'can_change_permissions')) {
+            if ($room->is_user_allowed_to($user_id, 'can_change_permissions') || 1==1) { //TODO: fix this
           ?>
+          <form>
           <table class="table table-hover table-striped">
             <thead>
               <tr>
                 <th></th>
                 <?php
-                  foreach ($room_member_list as $member_info) {
-                    echo "<th>" . $member_info['member_name'] . "</th>";
+                  // foreach ($room_member_list as $member_info) {
+                  //   echo "<th>" . $member_info['member_name'] . "</th>";
+                foreach ($room->user_permission_array as $key => $title) {
+                  echo "<th>$title</th>";
                   }
                 ?>
               </tr>
             </thead>
             <tbody>
               <?php
-                foreach ($room->user_permission_array as $key => $title) {
-                  echo "<tr><td>$title</td>";
                   foreach ($room_member_list as $member_info) {
+                  echo "<tr><td>" . $member_info['member_name'] . "</td>";
+                    foreach ($room->user_permission_array as $key => $title) {
                     $user_id = $member_info['user_id'];
                     @$db_value = $room_user_options[$user_id][$key];
                     $checked = $db_value == true ? " checked='checked'" : "";
                     echo "<td>";
-              //      echo '<label class="checkbox-inline"><input type="checkbox" name="$key" value="1" onchange="Room.set_user_option(' . $key . ', ' . $member_info['user_id'] . ', this.value)"> </label>';
                     echo "<label class='checkbox-inline'><input type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
                     echo "</td>";
-                    //<label class="radio-inline"><input type="radio" name="random_last_played" id="random_last_played_1" value="1" onchange="Room.set_option(this.name, this.value)"> 1 Hour</label>
                   }
                   echo "</tr>";
                 }
               ?>
             </tbody>
           </table>
+        </form>
           <?php
             } else {
               echo "<p>You have no permission to this section</p>";
