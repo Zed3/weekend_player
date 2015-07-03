@@ -113,6 +113,7 @@ class Room {
 
   public function set_admin($user_id) {
     $this->update_option('room_admin', $user_id);
+    $this->admin = $user_id;
   }
 
   public function set_admin_volume($volume) {
@@ -407,6 +408,24 @@ class Room {
   public function generate_update_version() {
     $update_version = md5(microtime() . mt_rand(101,9999999) );
     $this->db->query("update weekendv2_rooms SET update_version='{$update_version}' where id='{$this->get_id()}' LIMIT 1");
+  }
+
+  public function logout() {
+    global $Users;
+    if ($this->is_admin()) {
+      $this->set_admin(0);
+    }
+    $Users->logout();
+  }
+
+  public function is_owner() {
+    global $Users;
+    return $Users->get_auth_email() == $this->owner_email ? true : false;
+  }
+
+  public function is_admin() {
+    global $Users;
+    return $Users->get_auth_id() == $this->admin ? true : false;
   }
 }
 ?>

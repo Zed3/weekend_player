@@ -16,6 +16,48 @@
   $user_permissions = $room->get_user_options();
   $user_id = $Users->get_auth_id();
   $user_permission = $user_permissions[$user_id];
+
+
+  @$action = $_GET["action"] || null;
+  switch ($action) {
+    case "logout":
+      echo "logout initiated";
+      $room->logout();
+      header('Location: index.php');
+      die();
+    break;
+  }
+
+  $room_member_list = $room->get_members(666);
+
+  //update admin flag
+  // check for admin presence
+  $is_admin_on = false;
+  $room_admin = $room->options['room_admin'];
+
+  //check that admin is actually on
+  foreach ($room_member_list as $member) {
+    if (intval($member['user_id']) == $room_admin){
+      $is_admin_on = true;
+    }
+  }
+
+if ($room->is_owner()) {
+  echo "<div>You are owner</div>";
+  if (!$room->is_admin()) {
+    echo "<div>Take control</div>";
+  }
+}
+if ($room->is_admin()) {
+  echo "<div>You are admin</div>";
+}
+
+  if (!$is_admin_on) {
+    echo "<div class='red'>No admin is present, you are in charge now!</div>";
+    $room->set_admin($Users->get_auth_id());
+  }
+
+  echo "<div><a href='/room.php?id=" . $room_id . "&action=logout'>Logout</a></div>";
   require("header.php");
 ?>
 <script src="/js/room.js"></script>
@@ -24,7 +66,7 @@
 <script src="/js/chat.js"></script>
 <script>
   /* don't worry it wont help you hack the room, just to save IO */
-  is_room_admin = <?=($Users->get_auth_email() == $room->get_owner_email() ? "true" : "false")?>;
+  is_room_admin = <?php echo $room->is_admin() ? '1' : '0'; ?>;
   room_id = "<?=$room_id?>";
   user_permission = JSON.parse('<?php echo json_encode($user_permission);?>');
 </script>
@@ -40,28 +82,6 @@
 
   <div class="row">
     <div class="col-xs-12 col-md-8">
-<?php 
-  //TODO: debug remove
-  $room_member_list = $room->get_members(666);
-
-  //update admin flag
-  // check for admin presence
-  $is_admin_on = false;
-  $room_admin = $room->options['room_admin'];
-
-  //check that admin is actually on
-  foreach ($room_member_list as $member) {
-    if (intval($member['user_id']) == $room_admin){ 
-      $is_admin_on = true;
-    }
-  }
-
-  if (!$is_admin_on) {
-    echo "<div class='red'>No admin present, you are in charge now!</div>";
-    $room->set_admin($Users->get_auth_id());
-  }
-
-?>
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">

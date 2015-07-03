@@ -85,5 +85,11 @@ class Users {
   function get_auth_id() {
     return $this->db->get_user_id_by_email($this->get_auth_email());
   }
+
+  function logout() {
+    global $_SESSION;
+    unset($_SESSION["auth"]);
+    unset($_SESSION["auth_email"]);
+  }
 }
 ?>
