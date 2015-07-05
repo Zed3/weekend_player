@@ -43,21 +43,19 @@
   }
 
 if ($room->is_owner()) {
-  echo "<div>You are owner</div>";
+//TODO: remove  echo "<div>You are owner</div>";
   if (!$room->is_admin()) {
-    echo "<div>Take control</div>";
+//TODO: remove    echo "<div>Take control</div>";
   }
 }
 if ($room->is_admin()) {
-  echo "<div>You are admin</div>";
+//TODO: remove  echo "<div>You are admin</div>";
 }
 
   if (!$is_admin_on) {
-    echo "<div class='red'>No admin is present, you are in charge now!</div>";
     $room->set_admin($Users->get_auth_id());
   }
 
-  echo "<div><a href='/room.php?id=" . $room_id . "&action=logout'>Logout</a></div>";
   require("header.php");
 ?>
 <script src="/js/room.js"></script>
@@ -78,6 +76,12 @@ if ($room->is_admin()) {
     <li><span class='glyphicon glyphicon-music'></span></li>
     <li><a href="/">Home</a></li>
     <li class="active">Room: <?=$room->get_name()?></li>
+    <li class="right"><a href="/room.php?id=<?=$room_id?>&action=logout">Logout</a></li>
+<?php
+  if ($room->is_admin()) {
+    echo '<li class="right">Admin</li>';
+  }
+?>
   </ol>
 
   <div class="row">
