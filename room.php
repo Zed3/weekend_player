@@ -202,7 +202,7 @@ if ($room->is_admin()) {
                     @$db_value = $room_user_options[$user_id][$key];
                     $checked = $db_value == true ? " checked='checked'" : "";
                     echo "<td>";
-                    echo "<label class='checkbox-inline'><input type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
+                    echo "<label class='checkbox-inline'><input data-toggle='toggle' type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
                     echo "</td>";
                   }
                   echo "</tr>";
