@@ -327,10 +327,19 @@ function update_options(options){
 
     for (var setting in options) {
         var element_id = setting + '_' + options[setting];
-        //TODO: currently supports radios only
+
+        //Radio button support e.c. play_all_songs_1
         if ($("#" + element_id)[0]) {
             $("#" + element_id)[0].checked = "checked";
         }
+
+        //checkbox support e.c. play_all_songs
+        if ($("#" + setting)) {
+//            $("#" + setting)[0].checked = "checked";
+//$("#" + setting).bootstrapToggle('on');
+console.log(setting + ' is detected ' + options[setting]);
+        }
+
     }
     $('#load').fadeOut('normal');
 }

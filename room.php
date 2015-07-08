@@ -141,6 +141,7 @@ if ($room->is_admin()) {
         <label class="radio-inline"><input type="radio" class="" id="player_admin_radio_stateOff" name="player_admin_radio_state" value="0" checked="checked" onchange="set_admin_radio(this.value)" /> Off</label>
       </td>
     </tr>
+
     <tr>
       <td>Choose song from online members only</td>
       <td>
@@ -148,6 +149,7 @@ if ($room->is_admin()) {
         <label class="radio-inline"><input type="radio" name="random_online_members" id="random_online_members_0" value="0" onchange="Room.set_option(this.name, this.value)"> Off</label>
       </td>
     </tr>
+
     <tr>
       <td>Choose song without negative votes only</td>
       <td>
