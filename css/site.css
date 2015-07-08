@@ -206,3 +206,5 @@ body {
 .panel-heading a { color: #fff !important; }
 
 .breadcrumb .right { float: right;}
+
+.beta { background-color: red; }
