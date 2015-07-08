@@ -170,6 +170,47 @@ class Room {
     return $list;
   }
 
+  public function get_own_playlist() {
+    global $Users;
+    $user_id = $Users->get_auth_id();
+    $query = "
+      SELECT
+          song_id, title, length, weekendv2_songs.timestamp, video_id
+      FROM
+          weekendv2_votes
+              JOIN
+          weekendv2_songs ON weekendv2_songs.id = weekendv2_votes.song_id
+      WHERE
+          weekendv2_songs.user_id = $user_id
+              AND value > 0
+      UNION SELECT
+          id, title, length, timestamp, video_id
+      FROM
+          weekendv2_songs
+      WHERE
+          user_id = $user_id
+    ";
+    $result = $this->db->query($query);
+    if (!$result) {
+      return array();
+    }
+    $list = array();
+    while ($row = $this->db->fetch($result)) {
+      $song_id = $row["song_id"];
+      //get votes for each item
+      $vote = $this->db->fetch($this->db->query("SELECT IFNULL(SUM(value), 0) AS total FROM weekendv2_votes WHERE song_id = $song_id"));
+      $row['votes'] = $vote['total'];
+
+      //get plays for each item
+      $vote = $this->db->fetch($this->db->query("SELECT COUNT(*) AS total_played FROM weekendv2_list WHERE song_id = $song_id"));
+      $row['total_played'] = $vote['total_played'];
+
+      $list[] = $row;
+    }
+
+    return $list;
+  }
+
   public function get_history() {
     $query = "
       SELECT title, length, video_id AS v, weekendv2_list.id AS id, weekendv2_users.name AS user_name, song_id, copy

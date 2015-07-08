@@ -93,7 +93,8 @@ $(document).ready(function() {
     });
 
 ////////////////////
-
+    //Dynamic table handle
+    $('#own-songs-table').DataTable();
 
 } );
 var Room = {

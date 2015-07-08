@@ -91,6 +91,7 @@ if ($room->is_admin()) {
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#now-playing" aria-controls="now-playing" role="tab" data-toggle="tab">Playlist</a></li>
     <li role="presentation"><a href="#chat" aria-controls="chat" role="tab" data-toggle="tab">Chat <span id="chat_message_count" class="badge">0</span></a></li>
+    <li role="presentation"><a href="#own-songs" aria-controls="settings" role="tab" data-toggle="tab">My songs</a></li>
     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
   </ul>
 
@@ -117,6 +118,38 @@ if ($room->is_admin()) {
         <div class="panel-footer"><span class="small itallic" id="chat-online-list"></span></div>
       </div><!-- end of panel -->
     </div><!-- end of tab-pane -->
+
+    <div role="tabpanel" class="tab-pane" id="own-songs">
+      <div class="panel panel-primary">
+        <div class="panel-heading">Added and favourite songs</div>
+        <div class="panel-body">
+          <?php
+            //TODO: clean this up
+            $list = $room->get_own_playlist();
+            echo "<table id='own-songs-table' class='table table-hover table-striped'>";
+            echo "<thead><tr>
+                    <th>Title</th>
+                    <th>Total Played</th>
+                    <th>Votes</th>
+                    <th>Added</th>
+                  </tr></thead>";
+            echo "<tbody>";
+
+            foreach ($list as $record) {
+              echo "<tr>";
+              echo "<td>" . $record['title'] . "<a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"https://www.youtube.com/watch?v=" . $record['video_id'] . "\")'></span></a>" . "</td>";
+              echo "<td>" . $record['total_played'] . "</td>";
+              echo "<td>" . $record['votes'] . "</td>";
+              echo "<td>" . $record['timestamp'] . "</td>";
+              echo "</tr>";
+            }
+
+            echo "</tbody>";
+            echo "</table>";
+          ?>
+        </div><!-- end of body -->
+      </div><!-- end of primary panel -->
+    </div><!-- end of tab -->
 
     <div role="tabpanel" class="tab-pane" id="settings">
       <div class="panel panel-primary">
