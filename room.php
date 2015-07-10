@@ -89,10 +89,10 @@ if ($room->is_admin()) {
 <div role="tabpanel">
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#now-playing" aria-controls="now-playing" role="tab" data-toggle="tab">Playlist</a></li>
-    <li role="presentation"><a href="#chat" aria-controls="chat" role="tab" data-toggle="tab">Chat <span id="chat_message_count" class="badge">0</span></a></li>
-    <li role="presentation"><a href="#own-songs" aria-controls="settings" role="tab" data-toggle="tab">My Songs</a></li>
-    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
+    <li role="presentation" class="active"><a href="#now-playing" aria-controls="now-playing" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-headphones" aria-hidden="true"></span> Playlist</a></li>
+    <li role="presentation"><a href="#chat" aria-controls="chat" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Chat <span id="chat_message_count" class="badge">0</span></a></li>
+    <li role="presentation"><a href="#own-songs" aria-controls="settings" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span> My Songs</a></li>
+    <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Settings</a></li>
   </ul>
 
   <!-- Tab panes -->
