@@ -91,7 +91,7 @@ if ($room->is_admin()) {
   <ul class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#now-playing" aria-controls="now-playing" role="tab" data-toggle="tab">Playlist</a></li>
     <li role="presentation"><a href="#chat" aria-controls="chat" role="tab" data-toggle="tab">Chat <span id="chat_message_count" class="badge">0</span></a></li>
-    <li role="presentation"><a href="#own-songs" aria-controls="settings" role="tab" data-toggle="tab">My Songs <span class="badge beta">BETA</span></a></li>
+    <li role="presentation"><a href="#own-songs" aria-controls="settings" role="tab" data-toggle="tab">My Songs</a></li>
     <li role="presentation"><a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">Settings</a></li>
   </ul>
 
