@@ -129,8 +129,7 @@ if ($room->is_admin()) {
             echo "<table id='own-songs-table' class='table table-hover table-striped'>";
             echo "<thead><tr>
                     <th>Title</th>
-                    <th>Total Played</th>
-                    <th>Votes</th>
+                    <th>Length</th>
                     <th>Added</th>
                   </tr></thead>";
             echo "<tbody>";
@@ -138,8 +137,7 @@ if ($room->is_admin()) {
             foreach ($list as $record) {
               echo "<tr>";
               echo "<td>" . $record['title'] . "<a href='#'><span class='glyphicon glyphicon-repeat btn-xs' aria-hidden='true' onclick='add_youtube_video(\"https://www.youtube.com/watch?v=" . $record['video_id'] . "\")'></span></a>" . "</td>";
-              echo "<td>" . $record['total_played'] . "</td>";
-              echo "<td>" . $record['votes'] . "</td>";
+              echo "<td>" . gmdate("H:i:s", $record['length']) . "</td>";
               echo "<td>" . $record['timestamp'] . "</td>";
               echo "</tr>";
             }
