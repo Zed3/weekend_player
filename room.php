@@ -210,7 +210,7 @@ if ($room->is_admin()) {
             $room_member_list = $room->get_members(9999999);
             $room_user_options = $room->get_user_options();
 
-            if ($room->is_user_allowed_to($user_id, 'can_change_permissions') || 1==1) { //TODO: fix this
+            if ($room->is_user_allowed_to($user_id, 'can_change_permissions')) { 
           ?>
           <form>
           <table class="table table-hover table-striped">
@@ -220,8 +220,8 @@ if ($room->is_admin()) {
                 <?php
                   // foreach ($room_member_list as $member_info) {
                   //   echo "<th>" . $member_info['member_name'] . "</th>";
-                foreach ($room->user_permission_array as $key => $title) {
-                  echo "<th>$title</th>";
+                  foreach ($room->user_permission_array as $key => $title) {
+                    echo "<th>$title</th>";
                   }
                 ?>
               </tr>
@@ -229,13 +229,15 @@ if ($room->is_admin()) {
             <tbody>
               <?php
                   foreach ($room_member_list as $member_info) {
-                  echo "<tr><td>" . $member_info['member_name'] . "</td>";
+                    $disabled = '';
+                    if (!$room->is_user_allowed_to($user_id, 'can_change_permissions')) { $disabled = 'disabled'; }
+                    echo "<tr><td>" . $member_info['member_name'] . "</td>";
                     foreach ($room->user_permission_array as $key => $title) {
                     $user_id = $member_info['user_id'];
                     @$db_value = $room_user_options[$user_id][$key];
                     $checked = $db_value == true ? " checked='checked'" : "";
                     echo "<td>";
-                    echo "<label class='checkbox-inline'><input data-toggle='toggle' type='checkbox' $checked name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
+                    echo "<label class='checkbox-inline'><input data-toggle='toggle' type='checkbox' $checked $disabled name='$key' value='1' onchange='Room.set_user_option(\"$key\", $user_id , this.value)'> </label>";
                     echo "</td>";
                   }
                   echo "</tr>";

@@ -31,7 +31,7 @@ class Room {
   }
 
   public function is_user_allowed_to($user_id, $action) {
-    if $this->is_owner() return true;
+    if ($this->is_owner()) { return true; }
     $user_options = $this->get_user_options();
     @$user_options = $user_options[$user_id];
     return @$user_options[$action] == true ? true : false;
