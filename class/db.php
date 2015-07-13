@@ -6,6 +6,7 @@ class mydb {
       // Check connection
       if (mysqli_connect_errno()) {
         return false;
+        throw new Exception('DB Issues, bummer...');
       }
       mysqli_query($this->con,"SET NAMES utf8");
 
