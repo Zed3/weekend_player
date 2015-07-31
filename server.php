@@ -67,7 +67,8 @@ if (!$Rooms->room_exists_by_id($room_id)) {
 if ($task == "report") {
   // for room admin only
   $room = $Rooms->get_room($room_id);
-  if ($room->get_owner_email() != $Users->get_auth_email()) {
+//  if ($room->get_owner_email() != $Users->get_auth_email()) {
+  if ($room->get_admin_id() != $Users->get_auth_id()) {
     die("access denied");
   }
   switch ($kind) {

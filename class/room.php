@@ -26,7 +26,7 @@ class Room {
       $this->update_version = $row["update_version"];
       $this->options = json_decode($row["room_options"], true);
       $this->user_options = json_decode($row["user_options"], true);
-      $this->admin = $this->options['room_admin'];
+      @$this->admin = $this->options['room_admin'];
     }
   }
 
@@ -468,6 +468,10 @@ class Room {
   public function is_admin() {
     global $Users;
     return $Users->get_auth_id() == $this->admin ? true : false;
+  }
+
+  public function get_admin_id() {
+    return $this->admin;
   }
 }
 ?>

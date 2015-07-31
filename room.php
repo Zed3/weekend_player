@@ -15,7 +15,7 @@
   $room = $Rooms->get_room($room_id);
   $user_permissions = $room->get_user_options();
   $user_id = $Users->get_auth_id();
-  $user_permission = $user_permissions[$user_id];
+  $user_permission = $user_permissions[$user_id] || '{}';
 
 
   @$action = $_GET["action"] || null;
