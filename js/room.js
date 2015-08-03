@@ -199,7 +199,7 @@ function onPlayerError(event) {
 }
 
 function onPlayerStateChange(event) {
-    console.log("stateChanged : " + event.data);
+    //console.log("stateChanged : " + event.data);
     switch (event.data) {
         case -1:
             // unstarted
@@ -321,7 +321,7 @@ function update_options(options){
     if (JSON.stringify(Room.options) == JSON.stringify(options) === false) {
         Room.options = options;
         if (options["player_status"]) {
-            console.log("changing player status to " + options["player_status"]);
+            //console.log("changing player status to " + options["player_status"]);
             toggle_player(options["player_status"]);
         }
     }
@@ -338,7 +338,7 @@ function update_options(options){
         if ($("#" + setting)) {
 //            $("#" + setting)[0].checked = "checked";
 //$("#" + setting).bootstrapToggle('on');
-console.log(setting + ' is detected ' + options[setting]);
+//console.log(setting + ' is detected ' + options[setting]);
         }
 
     }
