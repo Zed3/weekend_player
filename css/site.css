@@ -211,3 +211,34 @@ body {
 
 div.DTTT { margin-bottom: 0.5em; float: right; }
 div.dataTables_wrapper { clear: both; }
+
+.footer-youtube, .footer-youtube a {  
+  color: rgb(120, 120, 120);
+  display: inline-block;
+  font-family: Arial, Verdana, sans-serif !important;
+  font-size: 11px;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: bold;
+  height: 14px;
+  line-height: 14px;
+  margin-bottom: 7px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  position: relative;
+  text-align: center;
+  text-transform: uppercase;
+  vertical-align: top;
+}
+
+
+.footer-youtube-container {
+  clear: both;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
