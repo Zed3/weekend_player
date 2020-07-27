@@ -53,17 +53,17 @@ class Playlist {
       $row['local'] = true;
       $list[] = $row;
     }
-
     // //get from web
-    global $youtube_api;
-    $results = $youtube_api->search($keyword);
-    foreach ($results as $item) {
-      $row['v'] = $item->id->videoId;
-      $row['title'] = $item->snippet->title;
-      $row['length'] = 0;
-      $list[] = $row;
-    }
-
+    try {
+      global $youtube_api;
+      $results = $youtube_api->search($keyword);
+      foreach ($results as $item) {
+        $row['v'] = $item->id->videoId;
+        $row['title'] = $item->snippet->title;
+        $row['length'] = 0;
+        $list[] = $row;
+      }
+    } catch (exception $e){}
     return $list;
   }
 
