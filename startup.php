@@ -15,7 +15,7 @@ try {
   $Rooms = new Rooms($db);
   $Chat = new Chat($conn);
   $Playlist = new Playlist($db);
-  $youtube_api = new Youtube(array('key' => 'AIzaSyAU20ONcngOuwge_V4CrAAUJPtCjmxPv-E'));
+  $youtube_api = new Youtube(array('key' => ''));
 } catch (Exception $e) {
   echo 'Caught exception: ',  $e->getMessage(), "\n";
   die();
